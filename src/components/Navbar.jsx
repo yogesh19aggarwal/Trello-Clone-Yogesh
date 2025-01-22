@@ -9,7 +9,7 @@ const Navbar = () => {
             <AppBar sx={{position:'static'}}>
                 <Toolbar variant="dense" sx={{display:'flex', justifyContent:'space-between', backgroundColor:'#1E3A8A'}}>
                     <Link to={'/'} style={{textDecoration:'none', color: 'inherit'}}>
-                        <Typography variant="h6" color="inherit" component="div" sx={{border:'2px solid white', padding:'0 1rem', borderRadius: '10px', cursor:'pointer'}}>
+                        <Typography variant="h6" color="inherit" component="div" sx={{border:'2px solid white', padding:'0 1rem', borderRadius: '10px', cursor:'pointer', marginLeft:'10%'}}>
                             Boards
                         </Typography>
                     </Link>
