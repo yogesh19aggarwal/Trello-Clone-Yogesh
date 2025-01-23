@@ -10,7 +10,7 @@ const HomeBoardCard = ({ board }) => {
     <Link to={`/${board.id}`} className="no-underline">
       <Box
         style={backgroundStyle} // Dynamic inline styles for background
-        className="w-[250px] h-[150px] bg-cover p-2 text-white cursor-pointer rounded-lg shadow-md flex items-end"
+        className="w-[220px] h-[100px] bg-cover p-2 text-white cursor-pointer rounded-lg shadow-md flex items-end"
       >
         <Typography
           variant="h6"

@@ -10,6 +10,8 @@ const BoardPage = () => {
   const [lists, setLists] = useState([]);
   const [boardData, setBoardData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const [cardDetails, setCardDetails] = useState({});
   const [showAddList, setShowAddList] = useState(false);
   const { boardId } = useParams();
 
@@ -26,6 +28,12 @@ const BoardPage = () => {
 
   const showList = ()=>{
     setShowAddList((prev)=>!prev);
+  }
+
+  const handleCardId=(...args)=>{
+    const [details] = args;
+    setCardDetails(details);
+    setShowModal(true);
   }
 
   return (
@@ -59,7 +67,7 @@ const BoardPage = () => {
           />
         ))
       ) : (
-        lists.map((list)=><ListCard key={list.id} list={list}/>)
+        lists.map((list)=><ListCard key={list.id} list={list} handleModal={handleCardId}/>)
         ) 
       }
       {!showAddList? (

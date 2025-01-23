@@ -33,7 +33,7 @@ const HomePage = () => {
       setBoards([...boards, response.data]);
       setBoardName("");
       setOpenPopover(null);
-      navigate(`/:${response.id}`);
+      navigate(`/${response.data.id}`);
     } catch (error) {
       console.error("Error creating board:", error);
       alert("Failed to create board. Please try again.");
@@ -55,7 +55,7 @@ const HomePage = () => {
     <div className="flex flex-col w-full px-2 py-4 items-center">
       <h1 className="text-3xl font-bold m-4 mb-8">Boards</h1>
 
-      <div className="grid grid-cols-1 min-[450px]:grid-cols-2 min-[950px]:grid-cols-3 min-[1250px]:grid-cols-4 gap-6 max-w-[1200px] mb-8 ">
+      <div className="grid grid-cols-1 min-[550px]:grid-cols-2 min-[850px]:grid-cols-3 min-[1250px]:grid-cols-4 gap-4 max-w-[1200px] mb-8 ">
 
         {/* Skeleton Loader */}
         {loading
@@ -76,7 +76,7 @@ const HomePage = () => {
         {!loading && (
           <div
             onClick={handleClick}
-            className="w-[250px] h-[150px] bg-slate-500 rounded-lg shadow-lg flex items-center justify-center text-white font-bold text-lg cursor-pointer"
+            className="w-[220px] h-[100px] bg-slate-500 rounded-lg shadow-lg flex items-center justify-center text-white font-bold text-lg cursor-pointer"
           >
             Create New Board
           </div>

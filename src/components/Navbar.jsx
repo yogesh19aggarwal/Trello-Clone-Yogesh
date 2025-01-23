@@ -1,26 +1,34 @@
-import { AppBar, Box, Toolbar } from "@mui/material"
-import Typography from '@mui/material/Typography';
+import { AppBar, Box, Toolbar } from "@mui/material";
+import Typography from "@mui/material/Typography";
 import { Link } from "react-router-dom";
 
 const Navbar = () => {
   return (
-    <>
-        <div>
-            <AppBar sx={{position:'static'}}>
-                <Toolbar variant="dense" sx={{display:'flex', justifyContent:'space-between', backgroundColor:'#1E3A8A'}}>
-                    <Link to={'/'} style={{textDecoration:'none', color: 'inherit'}}>
-                        <Typography variant="h6" color="inherit" component="div" sx={{border:'2px solid white', padding:'0 1rem', borderRadius: '10px', cursor:'pointer', marginLeft:'10%'}}>
-                            Boards
-                        </Typography>
-                    </Link>
-                    <Box sx={{width:'100px', margin:'auto', objectFit:'cover'}}>
-                        <img style={{width:'100px'}} src='https://trello.com/assets/d947df93bc055849898e.gif' alt="Logo" />
-                    </Box>
-                </Toolbar>
-            </AppBar>
-        </div>
-    </>
-  )
-}
+    <AppBar position="static" sx={{backgroundColor:'#1E3A8A'}} >
+      <Toolbar className="flex justify-between">
+        {/* Left Section: Boards Link */}
+        <Link to="/" className="no-underline text-white">
+          <Typography
+            variant="h6"
+            component="div"
+            marginLeft={2}
+            className="border-2 border-white px-4 py-1 rounded-lg cursor-pointer"
+          >
+            Boards
+          </Typography>
+        </Link>
 
-export default Navbar
+        {/* Center Section: Logo */}
+        <Box className="w-[100px] mx-auto">
+          <img
+            className="w-full object-contain"
+            src="https://trello.com/assets/d947df93bc055849898e.gif"
+            alt="Logo"
+          />
+        </Box>
+      </Toolbar>
+    </AppBar>
+  );
+};
+
+export default Navbar;
