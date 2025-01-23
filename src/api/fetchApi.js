@@ -6,8 +6,19 @@ const apiToken = import.meta.env.VITE_API_TOKEN;
 function fetchBoards() {
 
     return new Promise((resolve, reject) => {
-
         AxiosInstance.get(`members/me/boards?fields=name,url,prefs&key=${apiKey}&token=${apiToken}`)
+            .then((res) => {
+                resolve(res.data);
+            })
+            .catch((err) => {
+                reject(err.message);
+            })
+    })
+}
+function fetchOneBoard(boardId) {
+
+    return new Promise((resolve, reject) => {
+        AxiosInstance.get(`boards/${boardId}?key=${apiKey}&token=${apiToken}`)
             .then((res) => {
                 resolve(res.data);
             })
@@ -20,7 +31,6 @@ function fetchBoards() {
 function fetchLists(boardId) {
 
     return new Promise((resolve, reject) => {
-
         AxiosInstance.get(`boards/${boardId}/lists?key=${apiKey}&token=${apiToken}`)
             .then((res) => {
                 resolve(res.data);
@@ -31,5 +41,18 @@ function fetchLists(boardId) {
     })
 }
 
+function fetchListCards(listId) {
 
-export { fetchBoards, fetchLists };
+    return new Promise((resolve, reject) => {
+        AxiosInstance.get(`lists/${listId}/cards?key=${apiKey}&token=${apiToken}`)
+            .then((res) => {
+                resolve(res.data);
+            })
+            .catch((err) => {
+                reject(err.message)
+            })
+    })
+}
+
+
+export { fetchBoards, fetchLists, fetchOneBoard, fetchListCards };

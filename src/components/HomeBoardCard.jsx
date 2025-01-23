@@ -6,29 +6,17 @@ const HomeBoardCard = ({ board }) => {
     ? { backgroundColor: board.prefs.backgroundColor }
     : { backgroundImage: `url(${board.prefs.backgroundImage})` };
 
-
   return (
-    <Link to={`/${board.id}`}  style={{textDecoration:'none'}}>
+    <Link to={`/${board.id}`} className="no-underline">
       <Box
-        sx={{
-          ...backgroundStyle, // Apply conditional background color or image
-          width: "250px",
-          height: "150px",
-          backgroundSize: "cover",
-          padding: "0.5rem",
-          color: "white",
-          cursor: "pointer",
-          borderRadius: "10px",
-          boxShadow: "0 2px 5px rgba(0, 0, 0)", // Slight transparency for shadow
-          display: "flex",
-          alignItems: "flex-end", // Align text to the bottom
-        }}
+        style={backgroundStyle} // Dynamic inline styles for background
+        className="w-[250px] h-[150px] bg-cover p-2 text-white cursor-pointer rounded-lg shadow-md flex items-end"
       >
         <Typography
           variant="h6"
+          className="font-bold text-shadow-sm"
           sx={{
-            fontWeight: "bold",
-            textShadow: "1px 1px 3px rgba(0, 0, 0, 0.5)", // Add slight shadow for better readability
+            textShadow: "1px 1px 3px rgba(0, 0, 0, 0.5)", // Fine-grained text shadow control
           }}
         >
           {board.name}

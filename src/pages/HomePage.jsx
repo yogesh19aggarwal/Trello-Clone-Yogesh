@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, Grid2, Popover, Skeleton, TextField, Button } from "@mui/material";
+import { Popover, Skeleton, TextField, Button } from "@mui/material";
 
 import { fetchBoards } from "../api/fetchApi";
 import { postBoard } from "../api/postApi";
@@ -18,8 +18,6 @@ const HomePage = () => {
       .then((res) => {
         setBoards(res);
         setLoading(false);
-        console.log(res);
-        
       })
       .catch((err) => {
         console.error(err);
@@ -34,9 +32,8 @@ const HomePage = () => {
       const response = await postBoard(boardName);
       setBoards([...boards, response.data]);
       setBoardName("");
-      setOpenPopover(null); 
-      navigate(`/:${response.id}`)
-
+      setOpenPopover(null);
+      navigate(`/:${response.id}`);
     } catch (error) {
       console.error("Error creating board:", error);
       alert("Failed to create board. Please try again.");
@@ -55,58 +52,36 @@ const HomePage = () => {
   const id = open ? "create-board-popover" : undefined;
 
   return (
-    <Box sx={{ flexGrow: 1, p: 2, width: "100%" }}>
-      <h1 style={{ margin: "1rem 9%" }}>Boards</h1>
+    <div className="flex flex-col w-full px-2 py-4 items-center">
+      <h1 className="text-3xl font-bold m-4 mb-8">Boards</h1>
 
-      <Grid2
-        container
-        spacing={4}
-        sx={{
-          justifyContent: "flex-start", 
-          margin: "3rem 0 3rem 9%",
-          maxWidth: "1200px", 
-        }}
-      >
+      <div className="grid grid-cols-1 min-[450px]:grid-cols-2 min-[950px]:grid-cols-3 min-[1250px]:grid-cols-4 gap-6 max-w-[1200px] mb-8 ">
+
         {/* Skeleton Loader */}
         {loading
           ? new Array(10).fill(null).map((_, index) => (
-                <Skeleton
-                  key={index}
-                  variant="rectangular"
-                  width={250}
-                  height={150}
-                  sx={{ borderRadius: "10px" }}
-                />
+              <Skeleton
+                key={index}
+                variant="rectangular"
+                width={250}
+                height={150}
+                className="rounded-lg"
+              />
             ))
           : boards.map((board, index) => (
-                <HomeBoardCard key={index} board={board} />
+              <HomeBoardCard key={index} board={board} />
             ))}
 
         {/* Create New Board Button */}
         {!loading && (
-          <Grid2 item xs={12} sm={6} md={4} lg={3}>
-            <Box
-              onClick={handleClick}
-              sx={{
-                width: "250px",
-                height: "150px",
-                backgroundColor: "#CBD5E1",
-                cursor: "pointer",
-                borderRadius: "10px",
-                boxShadow: "0 2px 5px rgba(0,0,0,0.9)",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                fontWeight: "bold",
-                fontSize: "1.5rem",
-                color: "white",
-              }}
-            >
-              Create New Board
-            </Box>
-          </Grid2>
+          <div
+            onClick={handleClick}
+            className="w-[250px] h-[150px] bg-slate-500 rounded-lg shadow-lg flex items-center justify-center text-white font-bold text-lg cursor-pointer"
+          >
+            Create New Board
+          </div>
         )}
-      </Grid2>
+      </div>
 
       {/* Create Board Popover */}
       <Popover
@@ -119,10 +94,9 @@ const HomePage = () => {
           horizontal: "left",
         }}
       >
-        <Box
-          component="form"
+        <form
           onSubmit={createNewBoard}
-          sx={{ padding: "1rem", minWidth: "300px" }}
+          className="p-4 w-[300px] flex flex-col gap-4"
         >
           <TextField
             label="Name of the board"
@@ -135,14 +109,13 @@ const HomePage = () => {
             type="submit"
             variant="contained"
             color="primary"
-            sx={{ marginTop: "1rem" }}
-            fullWidth
+            className="bg-blue-600 text-white py-2"
           >
             Create
           </Button>
-        </Box>
+        </form>
       </Popover>
-    </Box>
+    </div>
   );
 };
 
