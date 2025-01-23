@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom"
 
 import Navbar from "./components/Navbar"
 import HomePage from "./pages/HomePage"
+import BoardPage from "./pages/BoardPage"
 
 const App = () => {
   return (
@@ -10,6 +11,7 @@ const App = () => {
 
       <Routes>
         <Route path="/" element={<HomePage/>} />
+        <Route path="/:boardId" element={<BoardPage/>} />
       </Routes>
     </>
   )

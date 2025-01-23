@@ -17,5 +17,19 @@ function fetchBoards() {
     })
 }
 
+function fetchLists(boardId) {
 
-export { fetchBoards };
+    return new Promise((resolve, reject) => {
+
+        AxiosInstance.get(`boards/${boardId}/lists?key=${apiKey}&token=${apiToken}`)
+            .then((res) => {
+                resolve(res.data);
+            })
+            .catch((err) => {
+                reject(err.message);
+            })
+    })
+}
+
+
+export { fetchBoards, fetchLists };
