@@ -6,6 +6,7 @@ import { FaPlus } from "react-icons/fa6";
 import CheckItems from "./CheckItems";
 import { postCheckItem } from "../api/postApi";
 import { fetchCheckItems } from "../api/fetchApi";
+import { deleteCheckItem } from "../api/deleteApi";
 import LinearProgressWithLabel from "./LinearProgressWithLabel";
 
 const CheckList = ({ checkListData, deleteCheckList }) => {
@@ -69,10 +70,11 @@ const CheckList = ({ checkListData, deleteCheckList }) => {
     }
   };
 
-  const deleteCheckItem = async(id) => {
+  const deleteCheckItemFunc = async(id) => {
     const updatedItems = checkItems.filter((item) => item.id !== id);
     try{
-
+      console.log(checkListData.id);
+      
       await deleteCheckItem(checkListData.id, id);
       setCheckItems(updatedItems);
       const part = Math.ceil(100/updatedItems.length);
@@ -115,7 +117,7 @@ const CheckList = ({ checkListData, deleteCheckList }) => {
             key={ele.id}
             itemData={ele}
             handleProgress={handleProgress}
-            deleteCheckItem={deleteCheckItem}
+            deleteCheckItem={deleteCheckItemFunc}
             idCard={checkListData.idCard}
           />
         ))}
