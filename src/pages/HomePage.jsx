@@ -35,8 +35,7 @@ const HomePage = () => {
       setOpenPopover(null);
       navigate(`boards/${response.data.id}`);
     } catch (error) {
-      console.error("Error creating board:", error);
-      alert("Failed to create board. Please try again.");
+      throw new Error(`${error}`)
     }
   };
 
