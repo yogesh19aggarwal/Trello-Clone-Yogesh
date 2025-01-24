@@ -54,5 +54,18 @@ function fetchListCards(listId) {
     })
 }
 
+function fetchCheckList(id) {
 
-export { fetchBoards, fetchLists, fetchOneBoard, fetchListCards };
+    return new Promise((resolve, reject) => {
+        AxiosInstance.get(`cards/${id}/checklists?key=${apiKey}&token=${apiToken}`)
+            .then((res) => {
+                resolve(res.data);
+            })
+            .catch((err) => {
+                reject(err.message)
+            })
+    })
+}
+
+
+export { fetchBoards, fetchLists, fetchOneBoard, fetchListCards, fetchCheckList };
