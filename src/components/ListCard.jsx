@@ -22,7 +22,9 @@ const ListCard = ({ list, handleArchive, handleModal }) => {
   }, [list.id]);
 
   const handleEdit = (...args) => {
+    
     const [cardDetails] = args;
+    console.log(cardDetails);
     handleModal(cardDetails)
   };
 
@@ -59,6 +61,11 @@ const ListCard = ({ list, handleArchive, handleModal }) => {
     catch(err){
       console.log(err);
     }
+  }
+
+  const handleSubmit = (e) =>{
+    e.preventDefault();
+    handleAddCard();
   }
 
   const handleShow = ()=>{
@@ -103,13 +110,14 @@ const ListCard = ({ list, handleArchive, handleModal }) => {
       </CardContent>
 
       {showAddCard ? (
-          <div className="cursor-pointer rounded-full flex flex-col">
+          <form className="cursor-pointer rounded-full flex flex-col"  onSubmit={handleSubmit}>
             <input
               type="text"
               className="w-full block p-2"
               placeholder="Add Card..."
               value={cardName}
               onChange={(e) => setCardName(e.target.value)}
+              onKeyDown={(e)=>{if(e.key==='Enter') return handleAddCard}}
             />
 
             <div className="action_btn flex items-center justify-between mt-2 block-flex w-full">
@@ -123,7 +131,7 @@ const ListCard = ({ list, handleArchive, handleModal }) => {
                 <RxCross2 />
               </span>
             </div>
-          </div>
+          </form>
         ) : (
           <div
             className="cursor-pointer hover:bg-black/10 py-2 px-4 rounded-full"

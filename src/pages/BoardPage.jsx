@@ -1,10 +1,15 @@
+/* eslint-disable no-useless-catch */
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { FaPlus } from "react-icons/fa6";
-import { Box, Typography, Skeleton } from "@mui/material";
+import { RxCross2 } from "react-icons/rx";
+import { Box, Typography, Skeleton, Button } from "@mui/material";
 
 import { fetchLists, fetchOneBoard } from "../api/fetchApi";
 import ListCard from "../components/ListCard";
+import CardModal from "../components/CardModal";
+import { putCard } from "../api/putApi";
+import { postList } from "../api/postApi";
 
 const BoardPage = () => {
   const [lists, setLists] = useState([]);
@@ -13,6 +18,7 @@ const BoardPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [cardDetails, setCardDetails] = useState({});
   const [showAddList, setShowAddList] = useState(false);
+  const [listName, setListName] = useState('');
   const { boardId } = useParams();
 
   useEffect(() => {
@@ -34,6 +40,40 @@ const BoardPage = () => {
     const [details] = args;
     setCardDetails(details);
     setShowModal(true);
+  }
+
+  const handleAddList = async() =>{
+    if(listName.trim() === ''){
+      setShowAddList(!showAddList);
+    }
+
+    try{
+      const response = await postList(listName, boardId);
+      console.log(response.data);
+      
+      setLists([...lists, response.data]);
+      setShowAddList(false);
+      setListName('');
+    }
+    catch(err){
+      throw err;
+    }
+  }
+
+  const handleArchive = async (listId) =>{
+    const newList = lists.filter(({id})=>{
+      return id !== listId
+    });
+
+    try{
+      const response = await putCard(listId);
+      if(response === 200){
+        setLists(newList);
+      }
+    }
+    catch(err){
+      throw err;
+    }
   }
 
   return (
@@ -67,7 +107,7 @@ const BoardPage = () => {
           />
         ))
       ) : (
-        lists.map((list)=><ListCard key={list.id} list={list} handleModal={handleCardId}/>)
+        lists.map((list)=><ListCard key={list.id} list={list} handleModal={handleCardId} handleArchive={handleArchive}/>)
         ) 
       }
       {!showAddList? (
@@ -82,9 +122,37 @@ const BoardPage = () => {
                     Add new list
                 </div>
             </div>
-            ): <p>hello</p>
+            ): 
+            (<div className="show min-w-[300px] bg-[#f1f2f4] hover:bg-[#f1f2f4] outline-none border-0 h-max py-2 px-4 rounded-md">
+              <input
+                type="text"
+                className="w-full py-2 px-3 rounded-full outline-none"
+                placeholder="Add List..."
+                value={listName}
+                onChange={(e) => setListName(e.target.value)}
+              />
+              <div className="action_btn flex items-center justify-between mt-2">
+                <Button
+                  className="bg-blue-800 text-white py-1 "
+                  onClick={handleAddList}
+                >
+                  Add
+                </Button>
+                <span className="cursor-pointer" onClick={showList}>
+                  <RxCross2 />
+                </span>
+              </div>
+          </div>)
         }
         </div>
+        <div className="modal">
+          <CardModal
+            showModal={showModal}
+            onClose={() => setShowModal(!showModal)}
+            cardId={cardDetails}
+          />
+        </div>
+
     </Box>
   );
 };

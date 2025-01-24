@@ -7,7 +7,7 @@ const HomeBoardCard = ({ board }) => {
     : { backgroundImage: `url(${board.prefs.backgroundImage})` };
 
   return (
-    <Link to={`/${board.id}`} className="no-underline">
+    <Link to={`/boards/${board.id}`} className="no-underline">
       <Box
         style={backgroundStyle} // Dynamic inline styles for background
         className="w-[220px] h-[100px] bg-cover p-2 text-white cursor-pointer rounded-lg shadow-md flex items-end"

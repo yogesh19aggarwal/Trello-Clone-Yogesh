@@ -22,7 +22,7 @@ const Navbar = () => {
         <Box className="w-[100px] mx-auto">
           <img
             className="w-full object-contain"
-            src="https://trello.com/assets/d947df93bc055849898e.gif"
+            src="https://trello.com/assets/87e1af770a49ce8e84e3.gif"
             alt="Logo"
           />
         </Box>

@@ -20,7 +20,6 @@ async function postBoard(boardName) {
 async function postCard(cardName, id) {
 
     try {
-
         const response = await AxiosInstance.post(
             `cards?name=${cardName}&idList=${id}&key=${apiKey}&token=${apiToken}`
         );
@@ -32,4 +31,18 @@ async function postCard(cardName, id) {
     }
 }
 
-export { postBoard, postCard };
+async function postList(name, boardId) {
+
+    try {
+        const response = await AxiosInstance.post(
+            `lists?name=${name}&idBoard=${boardId}&key=${apiKey}&token=${apiToken}`
+        );
+
+        return response;
+    }
+    catch (err) {
+        return err.message;
+    }
+}
+
+export { postBoard, postCard, postList };
