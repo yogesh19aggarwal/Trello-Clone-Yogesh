@@ -21,7 +21,6 @@ const CheckList = ({ checkListData, deleteCheckList }) => {
         const part = Math.ceil(100/response.length);
         setPortion(part);
         loadProgress(response, part);
-        console.log(response);
       }).catch((err)=>{
         throw new Error(`${err}`);
       })
@@ -62,6 +61,9 @@ const CheckList = ({ checkListData, deleteCheckList }) => {
       const newCheckItems = [...checkItems, response];
       setCheckItems(newCheckItems);
       setCheckItemName("");
+      const part = Math.ceil(100/newCheckItems.length);
+      setPortion(part);
+      loadProgress(newCheckItems , part);
     } catch (err) {
       throw new Error(`${err}`);
     }

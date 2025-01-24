@@ -18,13 +18,13 @@ const ListCard = ({ list, handleArchive, handleModal }) => {
   useEffect(() => {
     fetchListCards(list.id)
       .then((res) => setCard(res))
-      .catch((err) => console.log(err));
+      .catch((err) => {throw new Error(`${err}`)}
+      );
   }, [list.id]);
 
   const handleEdit = (...args) => {
     
     const [cardDetails] = args;
-    console.log(cardDetails);
     handleModal(cardDetails)
   };
 
@@ -39,7 +39,8 @@ const ListCard = ({ list, handleArchive, handleModal }) => {
       await deleteCard(id);
     }
     catch(err){
-      console.log(err);
+      throw new Error(`${err}`);
+    
     }
   };
 
@@ -59,7 +60,7 @@ const ListCard = ({ list, handleArchive, handleModal }) => {
       setCardName("");
     }
     catch(err){
-      console.log(err);
+      throw new Error(`${err}`);
     }
   }
 

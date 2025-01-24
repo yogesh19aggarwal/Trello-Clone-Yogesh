@@ -26,7 +26,6 @@ const BoardPage = () => {
       setBoardData(res);
     });
     fetchLists(boardId).then((res) => {
-      console.log(res);
       setLists(res);
       setLoading(false);
     });
@@ -54,7 +53,6 @@ const BoardPage = () => {
 
     try{
       const response = await postList(listName, boardId);
-      console.log(response.data);
       
       setLists([...lists, response.data]);
       setShowAddList(false);

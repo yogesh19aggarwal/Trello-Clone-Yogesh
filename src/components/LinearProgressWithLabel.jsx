@@ -4,10 +4,10 @@ import Box from "@mui/material/Box";
 
 function LinearProgressWithLabel(props) {
   return (
-    <Box sx={{ display: "flex", alignItems: "center" }}>
+    <Box sx={{ display: "flex", alignItems: "center", width:'120%' }}>
       <Box sx={{ minWidth: 35 }}>
         <Typography variant="h6" color="#99BFC4" >
-          {`${Math.round(props.value)}%`}
+          {`${props.value}%`}
         </Typography>
       </Box>
       <Box sx={{ width: "100%", mr: 1, ml:2}}>

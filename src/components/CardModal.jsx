@@ -73,7 +73,7 @@ const CardModal = ({showModal, onClose, cardId}) => {
 
   return (
     <Dialog open={showModal} onClose={onClose}>
-        <DialogContent className='max-w-[900px] h-[500px] w-full min-w-[400px]'>
+        <DialogContent className='max-w-[900px] h-[500px] min-[300px]:w-[250px] min-[500px]:w-[400px] lg:min-w-[600px]'>
             <DialogTitle className="text-left uppercase text-[24px]">
                 {cardId.name}
             </DialogTitle>
@@ -85,7 +85,7 @@ const CardModal = ({showModal, onClose, cardId}) => {
                     return <CheckList key={ele?.id} checkListData={ele} deleteCheckList={deleteChecklist}/>;
                     })}
                 </div>
-                <div className="right w-full sm:w-2/6 sm:border-l-2 sm:h-full px-3 ">
+                <div className="w-full sm:w-2/6 sm:border-l-2 sm:h-full px-3 ">
                     {" "}
                     <p className="cursor-pointer border-2 shadow-md rounded-md p-2 text-center" onClick={handlePopOverClick}>
                         CheckList
