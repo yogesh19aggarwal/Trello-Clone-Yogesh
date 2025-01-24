@@ -49,7 +49,6 @@ const HomePage = () => {
   };
 
   const open = Boolean(openPopover);
-  const id = open ? "create-board-popover" : undefined;
 
   return (
     <div className="flex flex-col w-full px-2 py-4 items-center">
@@ -85,7 +84,6 @@ const HomePage = () => {
 
       {/* Create Board Popover */}
       <Popover
-        id={id}
         open={open}
         anchorEl={openPopover}
         onClose={handleClose}

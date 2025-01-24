@@ -42,6 +42,11 @@ const BoardPage = () => {
     setShowModal(true);
   }
 
+  const handleSubmit = (e)=>{
+    e.preventDefault();
+    handleAddList();
+  }
+
   const handleAddList = async() =>{
     if(listName.trim() === ''){
       setShowAddList(!showAddList);
@@ -123,7 +128,7 @@ const BoardPage = () => {
                 </div>
             </div>
             ): 
-            (<div className="show min-w-[300px] bg-[#f1f2f4] hover:bg-[#f1f2f4] outline-none border-0 h-max py-2 px-4 rounded-md">
+            (<form onSubmit={handleSubmit} className="show min-w-[300px] bg-[#f1f2f4] hover:bg-[#f1f2f4] outline-none border-0 h-max py-2 px-4 rounded-md">
               <input
                 type="text"
                 className="w-full py-2 px-3 rounded-full outline-none"
@@ -142,7 +147,7 @@ const BoardPage = () => {
                   <RxCross2 />
                 </span>
               </div>
-          </div>)
+          </form>)
         }
         </div>
         <div className="modal">

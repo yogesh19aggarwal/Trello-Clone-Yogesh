@@ -45,4 +45,27 @@ async function postList(name, boardId) {
     }
 }
 
-export { postBoard, postCard, postList };
+async function postCheckItem(id, name) {
+
+    try {
+        const response = await AxiosInstance.post(`checklists/${id}/checkItems?name=${name}&key=${apiKey}&token=${apiToken}`);
+        return response.data;
+    }
+    catch (err) {
+        return err.message;
+    }
+}
+
+async function postCheckList(id, checkListName) {
+
+    try {
+        const response = await AxiosInstance.post(`checklists?idCard=${id}&name=${checkListName}&key=${apiKey}&token=${apiToken}`);
+
+        return response.data;
+    }
+    catch (err) {
+        return err.message;
+    }
+}
+
+export { postBoard, postCard, postList, postCheckItem, postCheckList };
