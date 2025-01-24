@@ -33,7 +33,7 @@ const HomePage = () => {
       setBoards([...boards, response.data]);
       setBoardName("");
       setOpenPopover(null);
-      navigate(`boards/${response.data.id}`);
+      navigate(`/boards/${response.data.id}`);
     } catch (error) {
       throw new Error(`${error}`)
     }
