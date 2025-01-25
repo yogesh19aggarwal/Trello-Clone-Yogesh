@@ -7,10 +7,10 @@ const CheckItems = ({ itemData, handleProgress ,deleteCheckItem, idCard}) => {
 
   const updateCheckItemState = async ( checkItemId, state) => {
     try{
-        await putCheckItems(idCard, checkItemId, state);
+      await putCheckItems(idCard, checkItemId, state);
     }
     catch(err){
-        throw new Error(`${err}`);
+      throw new Error(`${err}`);
     }
   };
 

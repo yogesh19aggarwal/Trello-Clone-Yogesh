@@ -25,7 +25,6 @@ const CheckList = ({ checkListData, deleteCheckList }) => {
       }).catch((err)=>{
         throw new Error(`${err}`);
       })
-
   },[checkListData.id])
 
 
