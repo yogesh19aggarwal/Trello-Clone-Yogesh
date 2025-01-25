@@ -14,13 +14,13 @@ const CheckItems = ({ itemData, handleProgress ,deleteCheckItem, idCard}) => {
     }
   };
 
-  function handleItemState() {
+  async function handleItemState() {
     const newCheckedState = !checked;
     setChecked(newCheckedState);
 
     const newState = newCheckedState ? "complete" : "incomplete";
 
-    updateCheckItemState(itemData.id , newState)
+    await updateCheckItemState(itemData.id , newState)
 
     let newData = { ...itemData, state: newCheckedState ? "complete" : "incomplete" };
 
@@ -36,7 +36,8 @@ const CheckItems = ({ itemData, handleProgress ,deleteCheckItem, idCard}) => {
         checked={checked} 
       />
       <p className={`w-[70%] ${checked ? "line-through" : ""}`}>{itemData.name}</p>
-      <span className="w-[20%] cursor-pointer" onClick={()=>deleteCheckItem(itemData.id)}><RiDeleteBin6Line />
+      <span className="w-[20%] cursor-pointer" onClick={()=>deleteCheckItem(itemData.id)}>
+        <RiDeleteBin6Line />
       </span>
     </div>
   );
