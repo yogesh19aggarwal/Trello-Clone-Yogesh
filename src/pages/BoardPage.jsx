@@ -59,7 +59,7 @@ const BoardPage = () => {
       setListName('');
     }
     catch(err){
-      throw err;
+      throw new Error(err);
     }
   }
 

@@ -55,7 +55,6 @@ const HomePage = () => {
 
       <div className="grid grid-cols-1 min-[550px]:grid-cols-2 min-[850px]:grid-cols-3 min-[1250px]:grid-cols-4 gap-4 max-w-[1200px] mb-8 ">
 
-        {/* Skeleton Loader */}
         {loading
           ? new Array(10).fill(null).map((_, index) => (
               <Skeleton
@@ -70,7 +69,6 @@ const HomePage = () => {
               <HomeBoardCard key={index} board={board} />
             ))}
 
-        {/* Create New Board Button */}
         {!loading && (
           <div
             onClick={handleClick}
@@ -81,7 +79,6 @@ const HomePage = () => {
         )}
       </div>
 
-      {/* Create Board Popover */}
       <Popover
         open={open}
         anchorEl={openPopover}

@@ -93,7 +93,7 @@ const CheckList = ({ checkListData, deleteCheckList }) => {
       return acc;
     }, 0);
 
-    setProgress(Math.min(100, initialProgress)); // Clamp progress to 100
+    setProgress(Math.min(100, initialProgress)); 
   }
 
   return (

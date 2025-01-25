@@ -6,7 +6,7 @@ const Navbar = () => {
   return (
     <AppBar position="static" sx={{backgroundColor:'#1E3A8A'}} >
       <Toolbar className="flex justify-between">
-        {/* Left Section: Boards Link */}
+        
         <Link to="/" className="no-underline text-white">
           <Typography
             variant="h6"
@@ -18,7 +18,6 @@ const Navbar = () => {
           </Typography>
         </Link>
 
-        {/* Center Section: Logo */}
         <Box className="w-[100px] mx-auto">
           <img
             className="w-full object-contain"
