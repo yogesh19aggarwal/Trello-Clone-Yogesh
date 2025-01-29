@@ -1,75 +1,69 @@
 import { useState, useEffect } from 'react';
-import {Dialog, DialogContent, DialogTitle, Button, Popover} from '@mui/material';
+import { Dialog, DialogContent, DialogTitle, Button, Popover } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { fetchCheckList } from '../api/fetchApi';
 import { deleteCheckList } from '../api/deleteApi';
 import CheckList from './CheckList';
 import { postCheckList } from '../api/postApi';
+import { setChecklists, addChecklist, deleteChecklist as deleteChecklistAction } from '../features/checklistSlice';
 
-const CardModal = ({showModal, onClose, cardId}) => {
-    const [checkList, setCheckList] = useState([]);
+const CardModal = ({ showModal, onClose, cardId }) => {
+    const dispatch = useDispatch();
+    const checklists = useSelector((state) => state.checklist.checklists[cardId.id] || []);
     const [openPopover, setOpenPopover] = useState(null);
     const [checkListName, setCheckListName] = useState('');
 
-    useEffect(()=>{
-        if(showModal && cardId){
+    useEffect(() => {
+        if (showModal && cardId) {
             fetchCheckList(cardId.id)
-                .then((res)=>{
-                    setCheckList(res);
+                .then((res) => {
+                    dispatch(setChecklists({ cardId: cardId.id, checklists: res }));
                 })
-                .catch((err)=>{
-                    throw err;
-                })
+                .catch((err) => {
+                    console.error(err);
+                });
         }
-    },[cardId, showModal]);
+    }, [cardId, showModal, dispatch]);
 
-    const handleSubmit = (e)=>{
+    const handleSubmit = (e) => {
         e.preventDefault();
         handleAddCheckList();
-    }
-    const handleAddCheckList = async()=>{
+    };
 
-        if(checkListName.trim() === ""){
+    const handleAddCheckList = async () => {
+        if (checkListName.trim() === "") {
             return;
         }
 
-        try{
+        try {
             const response = await postCheckList(cardId.id, checkListName);
             setCheckListName("");
-            setOpenPopover(!openPopover);
-            const newCheckList = [...checkList , response];
-            setCheckList(newCheckList);      
+            setOpenPopover(null);
+            dispatch(addChecklist({ cardId: cardId.id, checklist: response }));
+        } catch (err) {
+            console.error(err);
         }
-        catch(err){
-            throw new Error(`${err}`);   
-        }
-    }
+    };
 
-    const deleteChecklist = async(...args)=>{
+    const deleteChecklist = async (id) => {
+        if (!id) return;
 
-        const [id] = args;
-        if(!id && id.trim() === "") return;
-
-        const newCheckList = checkList.filter((ele)=>{
-            return ele.id !== id;
-        })
-
-        try{
+        try {
             await deleteCheckList(id);
-            setCheckList(newCheckList);
+            dispatch(deleteChecklistAction({ cardId: cardId.id, checklistId: id }));
+        } catch (error) {
+            console.error(error);
         }
-        catch(error){
-            throw new Error(`${error}`);
-        }
-    }
+    };
 
-    const handlePopOverClick = (e)=>{
+    const handlePopOverClick = (e) => {
         setOpenPopover(e.currentTarget);
-    }
+    };
 
     const open = Boolean(openPopover);
 
-    if(cardId.id === '') return;
+    if (cardId.id === '') return null;
 
   return (
     <Dialog open={showModal} onClose={onClose}>
@@ -80,8 +74,8 @@ const CardModal = ({showModal, onClose, cardId}) => {
 
             <div className="w-full h-full flex items-center pt-5 overflow-hidden flex-col-reverse sm:flex-row justify-between">
                 <div className="left w-4/6 h-[450px] overflow-y-auto">
-                {checkList &&
-                    checkList.map((ele) => {
+                {checklists &&
+                    checklists.map((ele) => {
                     return <CheckList key={ele?.id} checkListData={ele} deleteCheckList={deleteChecklist}/>;
                     })}
                 </div>

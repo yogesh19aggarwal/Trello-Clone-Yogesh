@@ -1,28 +1,34 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Popover, Skeleton, TextField, Button } from "@mui/material";
+import { useSelector, useDispatch } from "react-redux";
 
 import { fetchBoards } from "../api/fetchApi";
 import { postBoard } from "../api/postApi";
 import HomeBoardCard from "../components/HomeBoardCard";
+import { addBoard } from "../features/boardsSlice";
 
 const HomePage = () => {
-  const [boards, setBoards] = useState([]);
   const [loading, setLoading] = useState(true);
   const [openPopover, setOpenPopover] = useState(null);
   const [boardName, setBoardName] = useState("");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const boards = useSelector((state)=>state.board.boards);
 
   useEffect(() => {
     fetchBoards()
       .then((res) => {
-        setBoards(res);
+        res.forEach(board => {
+          dispatch(addBoard(board));
+        });
         setLoading(false);
       })
       .catch((err) => {
         console.error(err);
       });
-  }, []);
+  }, [dispatch]);
 
   const createNewBoard = async (event) => {
     event.preventDefault();
@@ -30,10 +36,12 @@ const HomePage = () => {
 
     try {
       const response = await postBoard(boardName);
-      setBoards([...boards, response.data]);
+
+      dispatch(addBoard(response.data));
       setBoardName("");
       setOpenPopover(null);
       navigate(`/boards/${response.data.id}`);
+
     } catch (error) {
       throw new Error(`${error}`)
     }
