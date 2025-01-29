@@ -19,12 +19,15 @@ const CheckItems = ({ itemData, handleProgress ,deleteCheckItem, idCard}) => {
     setChecked(newCheckedState);
 
     const newState = newCheckedState ? "complete" : "incomplete";
+    try{
+      await updateCheckItemState(itemData.id , newState)
+      let newData = { ...itemData, state: newCheckedState ? "complete" : "incomplete" };
+      handleProgress(newData);
 
-    await updateCheckItemState(itemData.id , newState)
-
-    let newData = { ...itemData, state: newCheckedState ? "complete" : "incomplete" };
-
-    handleProgress(newData);
+    }
+    catch(err){
+      throw new Error(`${err}`);
+    }
   }
 
   return (
