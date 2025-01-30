@@ -200,7 +200,6 @@ export const deleteCheckListById = createAsyncThunk(
 export const updateCheckItemState = createAsyncThunk(
     "board/updateCheckItemState",
     async ({ cardId, checkItemId, state }, { rejectWithValue }) => {
-        console.log('in thunk', cardId)
         try {
             await putCheckItems(cardId, checkItemId, state);
             return { checkItemId, state };

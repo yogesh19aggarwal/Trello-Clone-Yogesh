@@ -22,7 +22,6 @@ async function putCard(id) {
 }
 
 async function putCheckItems(cardId, itemId, state) {
-    console.log('in api', cardId)
     try {
         const response = await AxiosInstance.put(
             `cards/${cardId}/checkItem/${itemId}?key=${apiKey}&token=${apiToken}&state=${state}`

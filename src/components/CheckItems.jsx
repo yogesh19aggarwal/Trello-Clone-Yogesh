@@ -21,7 +21,7 @@ const CheckItems = ({ checkListId, itemData, deleteCheckItem }) => {
 
             setChecked(!checked);
         } catch (error) {
-            console.error("Failed to update check item state:", error);
+            throw new Error(error);
         }
     };
 
