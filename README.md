@@ -91,7 +91,7 @@ VITE_API_TOKEN=<Your Token>
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/yogesh19aggarwal/Trello-CLone_Yogesh
+   git clone https://github.com/yogesh19aggarwal/Trello-CLone-Yogesh
    cd trelloClone
    ```
 

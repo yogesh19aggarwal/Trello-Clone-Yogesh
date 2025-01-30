@@ -1,13 +1,10 @@
+// store.js
 import { configureStore } from "@reduxjs/toolkit";
-import boardReducer from "../features/boardsSlice";
-import checklistReducer from "../features/checklistSlice";
-import checklistItemReducer from "../features/checklistItemSlice";
+import boardsReducer from "../features/boardsSlice";
 
 const store = configureStore({
     reducer: {
-        board: boardReducer,
-        checklist: checklistReducer,
-        checklistItem: checklistItemReducer,
+        board: boardsReducer,
     },
 });
 

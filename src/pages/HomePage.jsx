@@ -1,33 +1,21 @@
+
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Popover, Skeleton, TextField, Button } from "@mui/material";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
-import { fetchBoards } from "../api/fetchApi";
-import { postBoard } from "../api/postApi";
+import { fetchBoardsAsync, createBoardAsync } from "../features/boardsSlice";
 import HomeBoardCard from "../components/HomeBoardCard";
-import { addBoard } from "../features/boardsSlice";
 
 const HomePage = () => {
-  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+  const { boards, loading } = useSelector((state) => state.board);
   const [openPopover, setOpenPopover] = useState(null);
   const [boardName, setBoardName] = useState("");
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-
-  const boards = useSelector((state)=>state.board.boards);
 
   useEffect(() => {
-    fetchBoards()
-      .then((res) => {
-        res.forEach(board => {
-          dispatch(addBoard(board));
-        });
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+    dispatch(fetchBoardsAsync());
   }, [dispatch]);
 
   const createNewBoard = async (event) => {
@@ -35,15 +23,12 @@ const HomePage = () => {
     if (!boardName.trim()) return;
 
     try {
-      const response = await postBoard(boardName);
-
-      dispatch(addBoard(response.data));
+      const newBoard = await dispatch(createBoardAsync(boardName)).unwrap();
       setBoardName("");
       setOpenPopover(null);
-      navigate(`/boards/${response.data.id}`);
-
+      navigate(`/boards/${newBoard.id}`);
     } catch (error) {
-      throw new Error(`${error}`)
+      console.error("Failed to create board:", error);
     }
   };
 
@@ -62,7 +47,6 @@ const HomePage = () => {
       <h1 className="text-3xl font-bold m-4 mb-8">Boards</h1>
 
       <div className="grid grid-cols-1 min-[550px]:grid-cols-2 min-[850px]:grid-cols-3 min-[1250px]:grid-cols-4 gap-4 max-w-[1200px] mb-8 ">
-
         {loading
           ? new Array(10).fill(null).map((_, index) => (
               <Skeleton

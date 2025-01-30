@@ -42,7 +42,6 @@ function fetchLists(boardId) {
 }
 
 function fetchListCards(listId) {
-
     return new Promise((resolve, reject) => {
         AxiosInstance.get(`lists/${listId}/cards?key=${apiKey}&token=${apiToken}`)
             .then((res) => {
