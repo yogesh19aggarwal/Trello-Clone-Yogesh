@@ -52,6 +52,8 @@ TRELLOCLONE
 │   │   ├── deleteApi.js
 │   │   ├── postApi.js
 │   │   ├── putApi.js
+|   ├── api
+|   |   ├── store.js
 │   ├── assets
 │   ├── components
 │   │   ├── CardModal.jsx
@@ -61,6 +63,8 @@ TRELLOCLONE
 │   │   ├── LinearProgressWithLabel.jsx
 │   │   ├── ListCard.jsx
 │   │   ├── Navbar.jsx
+|   ├── features
+|   |   ├── boardSlice.js
 │   ├── pages
 │   │   ├── BoardPage.jsx
 │   │   ├── HomePage.jsx

@@ -18,12 +18,10 @@ const BoardPage = () => {
   const [showAddList, setShowAddList] = useState(false);
   const [listName, setListName] = useState("");
 
-  // Fetch board data when the boardId changes
   useEffect(() => {
     dispatch(fetchBoardData(boardId));
   }, [boardId, dispatch]);
 
-  // Handle adding a new list
   const handleAddList = async () => {
     if (listName.trim() === "") {
       setShowAddList(false);
@@ -34,13 +32,11 @@ const BoardPage = () => {
     setListName("");
   };
 
-  // Handle opening the card modal
   const handleCardId = (details) => {
     setCardDetails(details);
     setShowModal(true);
   };
 
-  // Handle closing the card modal
   const handleCloseModal = () => {
     setShowModal(false);
   };
@@ -55,7 +51,6 @@ const BoardPage = () => {
       }}
       className="min-h-[93vh] bg-fixed bg-cover bg-center bg-no-repeat"
     >
-      {/* Board Title */}
       <Typography
         variant="h4"
         className="bg-black/30 text-white font-bold px-9 py-2"
@@ -63,9 +58,8 @@ const BoardPage = () => {
         {boardData.name}
       </Typography>
 
-      {/* Lists Section */}
       <div className="mx-auto px-10 w-full py-5 overflow-x-scroll flex gap-4 h-[85vh] no-scrollbar">
-        {/* Loading Skeletons */}
+      
         {loading ? (
           new Array(5).fill(null).map((_, index) => (
             <Skeleton
@@ -79,7 +73,7 @@ const BoardPage = () => {
             />
           ))
         ) : (
-          // Render Lists
+       
           lists.map((list) => (
             <ListCard
               key={list.id}
@@ -89,7 +83,6 @@ const BoardPage = () => {
           ))
         )}
 
-        {/* Add New List Section */}
         {!showAddList ? (
           <div
             className="add_list min-w-[300px] bg-[#f1f2f4]/40 hover:bg-[#f1f2f4] outline-none border-0 h-max py-2 px-4 rounded-full"
@@ -135,7 +128,6 @@ const BoardPage = () => {
         )}
       </div>
 
-      {/* Card Modal */}
       <div className="modal">
         <CardModal
           showModal={showModal}
