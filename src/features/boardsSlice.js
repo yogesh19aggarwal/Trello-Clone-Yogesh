@@ -5,19 +5,17 @@ import { postBoard, postList, postCard, postCheckList, postCheckItem } from "../
 import { putCard, putCheckItems } from "../api/putApi";
 import { deleteCard, deleteCheckList, deleteCheckItem } from "../api/deleteApi";
 
-// Initial state
 const initialState = {
-    boards: [], // For all boards
-    boardData: {}, // For the current board
-    lists: [], // For the current board's lists
-    cards: {}, // For the current board's cards
-    checkLists: [], // For the current board's checklists
-    checkItems: {}, // For the current board's check items
+    boards: [],
+    boardData: {},
+    lists: [],
+    cards: {},
+    checkLists: [],
+    checkItems: {},
     loading: false,
     error: null,
 };
 
-// Async thunk to fetch all boards
 export const fetchBoardsAsync = createAsyncThunk(
     "board/fetchBoards",
     async () => {
@@ -26,7 +24,6 @@ export const fetchBoardsAsync = createAsyncThunk(
     }
 );
 
-// Async thunk to create a new board
 export const createBoardAsync = createAsyncThunk(
     "board/createBoard",
     async (boardName) => {
@@ -35,7 +32,6 @@ export const createBoardAsync = createAsyncThunk(
     }
 );
 
-// Async thunk to fetch data for a specific board
 export const fetchBoardData = createAsyncThunk(
     "board/fetchBoardData",
     async (boardId, { rejectWithValue }) => {
@@ -49,7 +45,6 @@ export const fetchBoardData = createAsyncThunk(
     }
 );
 
-// Async thunk to add a list to the current board
 export const addList = createAsyncThunk(
     "board/addList",
     async ({ listName, boardId }, { rejectWithValue }) => {
@@ -74,7 +69,6 @@ export const fetchListCard = createAsyncThunk(
     }
 );
 
-// Async thunk to fetch checklists for a card
 export const fetchCheckListAsync = createAsyncThunk(
     "board/fetchCheckList",
     async (cardId, { rejectWithValue }) => {
@@ -87,7 +81,6 @@ export const fetchCheckListAsync = createAsyncThunk(
     }
 );
 
-// Async thunk to fetch check items for a checklist
 export const fetchCheckItemsAsync = createAsyncThunk(
     "board/fetchCheckItems",
     async (checkListId, { rejectWithValue }) => {
@@ -100,7 +93,6 @@ export const fetchCheckItemsAsync = createAsyncThunk(
     }
 );
 
-// Async thunk to add a card to a list
 export const addCard = createAsyncThunk(
     "board/addCard",
     async ({ cardName, listId }, { rejectWithValue }) => {
@@ -113,7 +105,6 @@ export const addCard = createAsyncThunk(
     }
 );
 
-// Async thunk to add a checklist to a card
 export const addCheckList = createAsyncThunk(
     "board/addCheckList",
     async ({ checkListName, cardId }, { rejectWithValue }) => {
@@ -126,7 +117,6 @@ export const addCheckList = createAsyncThunk(
     }
 );
 
-// Async thunk to add a check item to a checklist
 export const addCheckItem = createAsyncThunk(
     "board/addCheckItem",
     async ({ checkItemName, checkListId }, { rejectWithValue }) => {
@@ -139,7 +129,6 @@ export const addCheckItem = createAsyncThunk(
     }
 );
 
-// Async thunk to delete a check item
 export const deleteCheckItemById = createAsyncThunk(
     "board/deleteCheckItem",
     async ({ checkListId, checkItemId }, { rejectWithValue, getState }) => {
@@ -156,7 +145,6 @@ export const deleteCheckItemById = createAsyncThunk(
     }
 );
 
-// Async thunk to archive a list
 export const archiveList = createAsyncThunk(
     "board/archiveList",
     async (listId, { rejectWithValue }) => {
@@ -169,7 +157,6 @@ export const archiveList = createAsyncThunk(
     }
 );
 
-// Async thunk to delete a card
 export const deleteCardById = createAsyncThunk(
     "board/deleteCard",
     async (cardId, { rejectWithValue }) => {
@@ -182,7 +169,6 @@ export const deleteCardById = createAsyncThunk(
     }
 );
 
-// Async thunk to delete a checklist
 export const deleteCheckListById = createAsyncThunk(
     "board/deleteCheckList",
     async (checkListId, { rejectWithValue }) => {
@@ -195,8 +181,6 @@ export const deleteCheckListById = createAsyncThunk(
     }
 );
 
-
-// Async thunk to update a check item's state
 export const updateCheckItemState = createAsyncThunk(
     "board/updateCheckItemState",
     async ({ cardId, checkItemId, state }, { rejectWithValue }) => {
@@ -209,14 +193,12 @@ export const updateCheckItemState = createAsyncThunk(
     }
 );
 
-// Create the slice
 const boardSlice = createSlice({
     name: "board",
     initialState,
     reducers: {},
     extraReducers: (builder) => {
         builder
-            // Fetch all boards
             .addCase(fetchBoardsAsync.pending, (state) => {
                 state.loading = true;
             })
@@ -228,11 +210,9 @@ const boardSlice = createSlice({
                 state.loading = false;
                 state.error = action.error.message;
             })
-            // Create a new board
             .addCase(createBoardAsync.fulfilled, (state, action) => {
                 state.boards.push(action.payload);
             })
-            // Fetch data for a specific board
             .addCase(fetchBoardData.pending, (state) => {
                 state.loading = true;
             })
@@ -245,11 +225,9 @@ const boardSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload;
             })
-            // Add a list to the current board
             .addCase(addList.fulfilled, (state, action) => {
                 state.lists.push(action.payload);
             })
-            // Add a card to a list
             .addCase(addCard.fulfilled, (state, action) => {
                 const list = state.lists.find((list) => list.id === action.payload.listId);
                 if (list) {
@@ -257,20 +235,16 @@ const boardSlice = createSlice({
                     list.cards.push(action.payload);
                 }
             })
-            // Fetch checklists for a card
             .addCase(fetchCheckListAsync.fulfilled, (state, action) => {
                 state.checkLists = action.payload;
             })
-            // Fetch check items for a checklist
             .addCase(fetchCheckItemsAsync.fulfilled, (state, action) => {
                 const { checkListId, response } = action.payload;
                 state.checkItems[checkListId] = response;
             })
-            // Add a checklist to a card
             .addCase(addCheckList.fulfilled, (state, action) => {
                 state.checkLists.push(action.payload);
             })
-            // Add a check item to a checklist
             .addCase(addCheckItem.fulfilled, (state, action) => {
                 let { checkListId, response } = action.payload;
                 if (!state.checkItems[checkListId]) {
@@ -283,38 +257,31 @@ const boardSlice = createSlice({
                 state.cards[listId] = response;
                 ('extra reducer', state.cards);
             })
-            // Archive a list
             .addCase(archiveList.fulfilled, (state, action) => {
                 state.lists = state.lists.filter((list) => list.id !== action.payload);
             })
-            // Delete a card
             .addCase(deleteCardById.fulfilled, (state, action) => {
                 state.lists.forEach((list) => {
                     list.cards = list.cards.filter((card) => card.id !== action.payload);
                 });
             })
-            // Delete a checklist
             .addCase(deleteCheckListById.fulfilled, (state, action) => {
                 state.checkLists = state.checkLists.filter((cl) => cl.id !== action.payload);
             })
-            // Delete a check item
             .addCase(deleteCheckItemById.fulfilled, (state, action) => {
                 const { checkListId, updatedCheckItems } = action.payload;
                 state.checkItems[checkListId] = updatedCheckItems;
             })
-            // Update a check item's state
             .addCase(updateCheckItemState.fulfilled, (state, action) => {
                 const { checkItemId, state: newState } = action.payload;
 
-                // Iterate over all checkLists to find the check item
                 for (const checkListId in state.checkItems) {
                     const checkItems = state.checkItems[checkListId];
                     const checkItemIndex = checkItems.findIndex((item) => item.id === checkItemId);
 
                     if (checkItemIndex !== -1) {
-                        // Update the state of the check item
                         state.checkItems[checkListId][checkItemIndex].state = newState;
-                        break; // Exit the loop once the item is found
+                        break;
                     }
                 }
             });
