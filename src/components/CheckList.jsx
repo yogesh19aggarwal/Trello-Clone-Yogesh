@@ -72,7 +72,6 @@ const CheckList = ({ checkListData, deleteCheckList }) => {
   const deleteCheckItemFunc = async(id) => {
     const updatedItems = checkItems.filter((item) => item.id !== id);
     try{
-      console.log(checkListData.id);
       
       await deleteCheckItem(checkListData.id, id);
       setCheckItems(updatedItems);

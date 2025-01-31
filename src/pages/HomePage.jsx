@@ -20,7 +20,7 @@ const HomePage = () => {
         setLoading(false);
       })
       .catch((err) => {
-        console.error(err);
+        throw new Error(err);
       });
   }, []);
 
