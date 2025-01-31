@@ -1,4 +1,4 @@
-import { AxiosInstance } from "./AxiosInstance";
+import { AxiosInstance } from "./AxiosInstance.js";
 
 const apiKey = import.meta.env.VITE_API_KEY;
 const apiToken = import.meta.env.VITE_API_TOKEN;
