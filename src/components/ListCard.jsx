@@ -12,48 +12,44 @@ const ListCard = ({ list, handleModal }) => {
   const dispatch = useDispatch();
   const [showAddCard, setShowAddCard] = useState(false);
   const [cardName, setCardName] = useState("");
-  // let cards = useSelector((state)=>state.board.cards)
   let {id} = list 
-  // Fetch cards for this list when the component mounts or the list.id changes
 
   useEffect(() => {
     dispatch(fetchListCard(id));
   }, [id, dispatch]);
 
-  // Get cards for this list from the Redux store
   const cardsR = useSelector(SelectCards);
   const cards = cardsR[id] || []
   
-
-  // Handle adding a new card
   const handleAddCard = async () => {
     if (cardName.trim() === "") {
       setShowAddCard(!showAddCard);
       return;
     }
-    dispatch(addCard({ cardName, listId: list.id }));
-    setShowAddCard(false);
-    setCardName("");
+    dispatch(addCard({ cardName, listId: list.id })).unwrap().then(() => {
+      
+      setShowAddCard(false);
+      setCardName("");
+    }).catch((error) => {
+      throw new Error(error);
+    });
   };
 
-  // Handle deleting a card
   const handleDeleteCard = async (cardId) => {
     dispatch(deleteCardById(cardId));
   };
 
-  // Handle archiving a list
   const handleArchive = async (listId) => {
     dispatch(archiveList(listId));
   };
 
-  // Toggle the "Add Card" form
   const handleShow = () => {
     setShowAddCard((prev) => !prev);
   };
 
   return (
     <Card className="min-w-[400px] bg-[#f1f2f4] outline-none border-0 h-max p-2">
-      {/* Card Header */}
+      
       <CardHeader
         title={
           <div className="flex justify-between items-center font-medium">
@@ -64,8 +60,7 @@ const ListCard = ({ list, handleModal }) => {
           </div>
         }
       />
-
-      {/* Card Content */}
+     
       <CardContent>
         {cards.length !== 0 ? (
           cards.map((card) => (
@@ -88,7 +83,7 @@ const ListCard = ({ list, handleModal }) => {
         )}
       </CardContent>
 
-      {/* Add Card Form */}
+      
       {showAddCard ? (
         <form
           className="cursor-pointer rounded-full flex flex-col"

@@ -98,6 +98,7 @@ export const addCard = createAsyncThunk(
     async ({ cardName, listId }, { rejectWithValue }) => {
         try {
             const response = await postCard(cardName, listId);
+
             return response.data;
         } catch (error) {
             return rejectWithValue(error.message);
@@ -229,11 +230,12 @@ const boardSlice = createSlice({
                 state.lists.push(action.payload);
             })
             .addCase(addCard.fulfilled, (state, action) => {
-                const list = state.lists.find((list) => list.id === action.payload.listId);
-                if (list) {
-                    list.cards = list.cards || [];
-                    list.cards.push(action.payload);
+                const { idList, id, name } = action.payload;
+
+                if (!state.cards[idList]) {
+                    state.cards[idList] = [];
                 }
+                state.cards[idList].push({ id, name });
             })
             .addCase(fetchCheckListAsync.fulfilled, (state, action) => {
                 state.checkLists = action.payload;
@@ -255,15 +257,16 @@ const boardSlice = createSlice({
             .addCase(fetchListCard.fulfilled, (state, action) => {
                 let { listId, response } = action.payload;
                 state.cards[listId] = response;
-                ('extra reducer', state.cards);
             })
             .addCase(archiveList.fulfilled, (state, action) => {
                 state.lists = state.lists.filter((list) => list.id !== action.payload);
             })
             .addCase(deleteCardById.fulfilled, (state, action) => {
-                state.lists.forEach((list) => {
-                    list.cards = list.cards.filter((card) => card.id !== action.payload);
-                });
+
+                const cardId = action.payload;
+                for (const listId in state.cards) {
+                    state.cards[listId] = state.cards[listId].filter((card) => card.id !== cardId);
+                }
             })
             .addCase(deleteCheckListById.fulfilled, (state, action) => {
                 state.checkLists = state.checkLists.filter((cl) => cl.id !== action.payload);
