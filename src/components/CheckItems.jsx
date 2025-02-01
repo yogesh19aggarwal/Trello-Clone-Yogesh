@@ -2,46 +2,42 @@ import { useState } from "react";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { putCheckItems } from "../api/putApi";
 
-const CheckItems = ({ itemData, handleProgress ,deleteCheckItem, idCard}) => {
+const CheckItems = ({ itemData ,deleteCheckItem, idCard, updateCheckItem}) => {
   const [checked, setChecked] = useState(itemData.state === "complete" ? true : false);
+  const [error, setError] = useState('');
 
-  const updateCheckItemState = async ( checkItemId, state) => {
+  const updateCheckItemState = async () => {
+    setChecked(prev=>!prev);
+    const newState = checked ? "incomplete" : "complete";
+    const checkItemId = itemData.id;
+
     try{
-      await putCheckItems(idCard, checkItemId, state);
+      await putCheckItems(idCard, checkItemId, newState);
+      updateCheckItem(checkItemId, newState);
     }
     catch(err){
-      throw new Error(`${err}`);
+      setError(err);
     }
   };
 
-  async function handleItemState() {
-    const newCheckedState = !checked;
-    setChecked(newCheckedState);
-
-    const newState = newCheckedState ? "complete" : "incomplete";
-    try{
-      await updateCheckItemState(itemData.id , newState)
-      let newData = { ...itemData, state: newCheckedState ? "complete" : "incomplete" };
-      handleProgress(newData);
-
-    }
-    catch(err){
-      throw new Error(`${err}`);
-    }
-  }
-
   return (
     <div className="check_item flex items-center justify-between my-1 w-full">
-      <input
-        type="checkbox"
-        className="w-[10%]"
-        onChange={handleItemState}
-        checked={checked} 
-      />
-      <p className={`w-[70%] ${checked ? "line-through" : ""}`}>{itemData.name}</p>
-      <span className="w-[20%] cursor-pointer" onClick={()=>deleteCheckItem(itemData.id)}>
-        <RiDeleteBin6Line />
-      </span>
+      {!error?
+        <>
+          <input
+            type="checkbox"
+            className="w-[10%]"
+            onChange={updateCheckItemState}
+            checked={checked} 
+          />
+          <p className={`w-[70%] ${checked ? "line-through" : ""}`}>{itemData.name}</p>
+          <span className="w-[20%] cursor-pointer" onClick={()=>deleteCheckItem(itemData.id)}>
+            <RiDeleteBin6Line />
+          </span>
+      </>
+      :
+      <h1>{error}</h1>
+      }
     </div>
   );
 };

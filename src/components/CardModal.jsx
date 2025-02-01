@@ -10,6 +10,7 @@ const CardModal = ({showModal, onClose, cardId}) => {
     const [checkList, setCheckList] = useState([]);
     const [openPopover, setOpenPopover] = useState(null);
     const [checkListName, setCheckListName] = useState('');
+    const [error, setError] = useState('');
 
     useEffect(()=>{
         if(showModal && cardId){
@@ -18,7 +19,7 @@ const CardModal = ({showModal, onClose, cardId}) => {
                     setCheckList(res);
                 })
                 .catch((err)=>{
-                    throw err;
+                    setError(err);
                 })
         }
     },[cardId, showModal]);
@@ -41,7 +42,7 @@ const CardModal = ({showModal, onClose, cardId}) => {
             setCheckList(newCheckList);      
         }
         catch(err){
-            throw new Error(`${err}`);   
+            setError(err); 
         }
     }
 
@@ -58,8 +59,8 @@ const CardModal = ({showModal, onClose, cardId}) => {
             await deleteCheckList(id);
             setCheckList(newCheckList);
         }
-        catch(error){
-            throw new Error(`${error}`);
+        catch(err){
+            setError(err);
         }
     }
 
@@ -73,6 +74,7 @@ const CardModal = ({showModal, onClose, cardId}) => {
 
   return (
     <Dialog open={showModal} onClose={onClose}>
+        {!error?
         <DialogContent className='max-w-[900px] h-[500px] min-[300px]:w-[250px] min-[500px]:w-[400px] lg:min-w-[600px]'>
             <DialogTitle className="text-left uppercase text-[24px]">
                 {cardId.name}
@@ -113,9 +115,10 @@ const CardModal = ({showModal, onClose, cardId}) => {
                     </Popover>
                 </div>
             </div>
-
-
         </DialogContent>
+        :
+        <h1>{error}</h1>
+        }
     </Dialog>
   )
 }

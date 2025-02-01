@@ -19,16 +19,20 @@ const BoardPage = () => {
   const [cardDetails, setCardDetails] = useState({});
   const [showAddList, setShowAddList] = useState(false);
   const [listName, setListName] = useState('');
+  const [error, setError] = useState('');
   const { boardId } = useParams();
 
   useEffect(() => {
     fetchOneBoard(boardId).then((res) => {
       setBoardData(res);
     });
+    
     fetchLists(boardId).then((res) => {
       setLists(res);
       setLoading(false);
-    });
+    }).catch((err)=>{
+      setError(err);
+    })
   }, [boardId]);
 
   const showList = ()=>{
@@ -59,7 +63,7 @@ const BoardPage = () => {
       setListName('');
     }
     catch(err){
-      throw new Error(err);
+      setError(err);
     }
   }
 
@@ -75,7 +79,7 @@ const BoardPage = () => {
       }
     }
     catch(err){
-      throw err;
+      setError(err);
     }
   }
 
@@ -89,73 +93,77 @@ const BoardPage = () => {
       }}
       className="min-h-[93vh] bg-fixed bg-cover bg-center bg-no-repeat"
     >
-      <Typography
-        variant="h4"
-        className="bg-black/30 text-white font-bold px-9 py-2"
-      >
-        {boardData.name}
-      </Typography>
+      {!error?
+      <>
+        <Typography
+          variant="h4"
+          className="bg-black/30 text-white font-bold px-9 py-2"
+        >
+          {boardData.name}
+        </Typography>
 
-      <div className="mx-auto px-10 w-full py-5 overflow-x-scroll flex gap-4 h-[85vh] no-scrollbar">
-      {loading ? (
-        new Array(5).fill(null).map((_, index) => (
-            <Skeleton
-            key={index}
-            variant="rectangular"
-            sx={{
-              minWidth: 350,
-              height: index % 2 === 0 ? 240 : 120,
-              borderRadius: 2,
-            }}
-          />
-        ))
-      ) : (
-        lists.map((list)=><ListCard key={list.id} list={list} handleModal={handleCardId} handleArchive={handleArchive}/>)
-        ) 
-      }
-      {!showAddList? (
+        <div className="mx-auto px-10 w-full py-5 overflow-x-scroll flex gap-4 h-[85vh] no-scrollbar">
+          {loading ? (
+            new Array(5).fill(null).map((_, index) => (
+                <Skeleton
+                key={index}
+                variant="rectangular"
+                sx={{
+                  minWidth: 350,
+                  height: index % 2 === 0 ? 240 : 120,
+                  borderRadius: 2,
+                }}
+              />
+            ))
+          ) : (
+            lists.map((list)=><ListCard key={list.id} list={list} handleModal={handleCardId} handleArchive={handleArchive}/>)
+            ) 
+          }
+          {!showAddList? (
             <div
-                className="add_list min-w-[300px] bg-[#f1f2f4]/40 hover:bg-[#f1f2f4] outline-none border-0 h-max py-2 px-4 rounded-full"
-                onClick={showList}
-            >
+              className="add_list min-w-[300px] bg-[#f1f2f4]/40 hover:bg-[#f1f2f4] outline-none border-0 h-max py-2 px-4 rounded-full"
+                  onClick={showList}
+              >
                 <div className="message_list flex items-center cursor-pointer">
-                    <span className="mr-3">
-                        <FaPlus />{" "}
-                    </span>
-                    Add new list
+                  <span className="mr-3">
+                    <FaPlus />{" "}
+                  </span>
+                  Add new list
                 </div>
             </div>
-            ): 
+          ): 
             (<form onSubmit={handleSubmit} className="show min-w-[300px] bg-[#f1f2f4] hover:bg-[#f1f2f4] outline-none border-0 h-max py-2 px-4 rounded-md">
-              <input
-                type="text"
-                className="w-full py-2 px-3 rounded-full outline-none"
-                placeholder="Add List..."
-                value={listName}
-                onChange={(e) => setListName(e.target.value)}
-              />
-              <div className="action_btn flex items-center justify-between mt-2">
-                <Button
-                  className="bg-blue-800 text-white py-1 "
-                  onClick={handleAddList}
-                >
-                  Add
-                </Button>
-                <span className="cursor-pointer" onClick={showList}>
-                  <RxCross2 />
-                </span>
-              </div>
-          </form>)
-        }
+                <input
+                  type="text"
+                  className="w-full py-2 px-3 rounded-full outline-none"
+                  placeholder="Add List..."
+                  value={listName}
+                  onChange={(e) => setListName(e.target.value)}
+                />
+                <div className="action_btn flex items-center justify-between mt-2">
+                  <Button
+                    className="bg-blue-800 text-white py-1 "
+                    onClick={handleAddList}
+                  >
+                    Add
+                  </Button>
+                  <span className="cursor-pointer" onClick={showList}>
+                    <RxCross2 />
+                  </span>
+                </div>
+            </form>)
+          }
         </div>
-        <div className="modal">
-          <CardModal
-            showModal={showModal}
-            onClose={() => setShowModal(!showModal)}
-            cardId={cardDetails}
-          />
-        </div>
-
+      </>
+      :<h1>{error}</h1>
+      }
+      <div className="modal">
+        <CardModal
+          showModal={showModal}
+          onClose={() => setShowModal(!showModal)}
+          cardId={cardDetails}
+        />
+      </div>
     </Box>
   );
 };

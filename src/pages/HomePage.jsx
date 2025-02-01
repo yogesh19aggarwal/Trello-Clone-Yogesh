@@ -11,6 +11,7 @@ const HomePage = () => {
   const [loading, setLoading] = useState(true);
   const [openPopover, setOpenPopover] = useState(null);
   const [boardName, setBoardName] = useState("");
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -20,7 +21,7 @@ const HomePage = () => {
         setLoading(false);
       })
       .catch((err) => {
-        throw new Error(err);
+        setError(err);
       });
   }, []);
 
@@ -35,7 +36,7 @@ const HomePage = () => {
       setOpenPopover(null);
       navigate(`/boards/${response.data.id}`);
     } catch (error) {
-      throw new Error(`${error}`)
+      setError(error);
     }
   };
 
@@ -55,27 +56,34 @@ const HomePage = () => {
 
       <div className="grid grid-cols-1 min-[550px]:grid-cols-2 min-[850px]:grid-cols-3 min-[1250px]:grid-cols-4 gap-4 max-w-[1200px] mb-8 ">
 
-        {loading
-          ? new Array(10).fill(null).map((_, index) => (
-              <Skeleton
-                key={index}
-                variant="rectangular"
-                width={250}
-                height={150}
-                className="rounded-lg"
-              />
-            ))
-          : boards.map((board, index) => (
-              <HomeBoardCard key={index} board={board} />
-            ))}
+        {!error?
+          loading
+            ? new Array(10).fill(null).map((_, index) => (
+                <Skeleton
+                  key={index}
+                  variant="rectangular"
+                  width={250}
+                  height={150}
+                  className="rounded-lg"
+                />
+              ))
+            : 
+            boards.length !== 0?
+              boards.map((board, index) => (
+                <HomeBoardCard key={index} board={board} />
+              ))
+              :<h1 className='text-3xl justify-self-center'>There are no boards</h1>
+
+          :<h1 className='text-3xl justify-self-center'>{error}</h1>
+        } 
 
         {!loading && (
-          <div
-            onClick={handleClick}
-            className="w-[220px] h-[100px] bg-slate-500 rounded-lg shadow-lg flex items-center justify-center text-white font-bold text-lg cursor-pointer"
-          >
-            Create New Board
-          </div>
+            <div
+              onClick={handleClick}
+              className="w-[220px] h-[100px] bg-slate-500 rounded-lg shadow-lg flex items-center justify-center text-white font-bold text-lg cursor-pointer"
+            >
+              Create New Board
+            </div>
         )}
       </div>
 
