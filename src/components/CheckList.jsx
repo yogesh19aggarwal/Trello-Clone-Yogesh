@@ -28,14 +28,12 @@ const CheckList = ({ checkListData, deleteCheckList }) => {
     dispatch(fetchCheckItemsAsync(checkListData.id));
   }, [checkListData.id, dispatch]);
 
-  // Calculate progress
   const calculateProgress = () => {
     if (!checkItems || checkItems.length === 0) return 0;
 
     const completedItems = checkItems.filter(item => item.state === "complete").length;
     return Math.round((completedItems / checkItems.length) * 100);
   };
-
 
   const handleAddCheckItem = async () => {
     if (checkItemName.trim() === "") return;
