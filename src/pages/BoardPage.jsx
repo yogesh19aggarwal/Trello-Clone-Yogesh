@@ -138,7 +138,7 @@ const BoardPage = () => {
         )}
       </Box>
 
-      <CardModal showModal={showModal} onClose={() => setShowModal(false)} cardId={cardDetails} />
+      <CardModal showModal={showModal} onClose={() => setShowModal(false)} cardDetails={cardDetails} />
 
       <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={() => setSnackbarOpen(false)}>
         <Alert severity="info" onClose={() => setSnackbarOpen(false)}>

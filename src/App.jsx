@@ -16,7 +16,7 @@ const App = () => {
           <Route path="boards/:boardId" element={<BoardPage/>} />
           <Route path="*" element={<NotFound/>} />
         </Route>
-        
+
       </Routes>
     </>
   )
