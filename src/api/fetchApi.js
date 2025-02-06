@@ -1,85 +1,82 @@
 import { AxiosInstance } from "./AxiosInstance";
 
-const apiKey = import.meta.env.VITE_API_KEY;
-const apiToken = import.meta.env.VITE_API_TOKEN;
-
 function fetchBoards() {
-
     return new Promise((resolve, reject) => {
-        AxiosInstance.get(`members/me/boards?fields=name,url,prefs&key=${apiKey}&token=${apiToken}`)
+        AxiosInstance.get("/members/me/boards?fields=name,url,prefs")
             .then((res) => {
                 resolve(res.data);
             })
             .catch((err) => {
                 reject(err.message);
-            })
-    })
+            });
+    });
 }
-function fetchOneBoard(boardId) {
 
+function fetchOneBoard(boardId) {
     return new Promise((resolve, reject) => {
-        AxiosInstance.get(`boards/${boardId}?key=${apiKey}&token=${apiToken}`)
+        AxiosInstance.get(`/boards/${boardId}`)
             .then((res) => {
                 resolve(res.data);
             })
             .catch((err) => {
                 reject(err.message);
-            })
-    })
+            });
+    });
 }
 
 function fetchLists(boardId) {
-
     return new Promise((resolve, reject) => {
-        AxiosInstance.get(`boards/${boardId}/lists?key=${apiKey}&token=${apiToken}`)
+        AxiosInstance.get(`/boards/${boardId}/lists`)
             .then((res) => {
                 resolve(res.data);
             })
             .catch((err) => {
                 reject(err.message);
-            })
-    })
+            });
+    });
 }
 
 function fetchListCards(listId) {
-
     return new Promise((resolve, reject) => {
-        AxiosInstance.get(`lists/${listId}/cards?key=${apiKey}&token=${apiToken}`)
+        AxiosInstance.get(`/lists/${listId}/cards`)
             .then((res) => {
                 resolve(res.data);
             })
             .catch((err) => {
-                reject(err.message)
-            })
-    })
+                reject(err.message);
+            });
+    });
 }
 
 function fetchCheckList(id) {
-
     return new Promise((resolve, reject) => {
-        AxiosInstance.get(`cards/${id}/checklists?key=${apiKey}&token=${apiToken}`)
+        AxiosInstance.get(`/cards/${id}/checklists`)
             .then((res) => {
                 resolve(res.data);
             })
             .catch((err) => {
-                reject(err.message)
-            })
-    })
+                reject(err.message);
+            });
+    });
 }
 
 function fetchCheckItems(id) {
-
     return new Promise((resolve, reject) => {
-        AxiosInstance.get(`checklists/${id}/checkItems?key=${apiKey}&token=${apiToken}`)
+        AxiosInstance.get(`/checklists/${id}/checkItems`)
             .then((res) => {
                 resolve(res.data);
             })
             .catch((err) => {
-                reject(err.message)
-            })
-    })
+                reject(err.message);
+            });
+    });
 }
 
-
-
-export { fetchBoards, fetchLists, fetchOneBoard, fetchListCards, fetchCheckList, fetchCheckItems };
+export {
+    fetchBoards,
+    fetchLists,
+    fetchOneBoard,
+    fetchListCards,
+    fetchCheckList,
+    fetchCheckItems,
+};

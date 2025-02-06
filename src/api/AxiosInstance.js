@@ -1,11 +1,17 @@
 import axios from "axios";
+import { config } from "../config/config";
 
-// creating axios for api calling
+const { baseUrl, apiKey, apiToken } = config;
+
 export const AxiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_URL, // importing api url from env
+  baseURL: baseUrl,
   timeout: 5000,
   headers: {
     "Content-type": "application/json",
     accept: "application/json",
+  },
+  params: {
+    key: apiKey,
+    token: apiToken,
   },
 });

@@ -64,7 +64,7 @@ const BoardPage = () => {
 
     try {
       const response = await postList(listName, boardId);
-      setLists([...lists, response.data]);
+      setLists([...lists, response]);
       setShowAddList(false);
       setListName("");
       handleSnackbar("List added successfully.");
@@ -100,7 +100,7 @@ const BoardPage = () => {
       <Box className="flex gap-4 overflow-x-auto py-6 px-8">
         {loading ? (
           new Array(5).fill(null).map((_, index) => (
-            <Skeleton key={index} variant="rectangular" className="min-w-[350px] h-40 rounded-md" />
+            <Skeleton key={index} variant="rectangular" className="!min-w-[350px] !h-40 rounded-md" />
           ))
         ) : (
           lists.map((list) => (
@@ -113,7 +113,7 @@ const BoardPage = () => {
             variant="contained"
             startIcon={<FaPlus />}
             onClick={() => setShowAddList(true)}
-            className="!min-w-[300px] h-[50px] !bg-white !text-black"
+            className="!min-w-[350px] h-[50px] !bg-white !text-black"
           >
             Add new list
           </Button>

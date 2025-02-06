@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Dialog, DialogContent, DialogTitle, Button, Popover, Snackbar, Alert, Box, TextField, Typography } from '@mui/material';
+import { Dialog, DialogContent, DialogTitle, Button, Popover, Snackbar, Alert, Box, TextField, FormControl } from '@mui/material';
 
 import { fetchCheckList } from '../api/fetchApi';
 import { deleteCheckList } from '../api/deleteApi';
@@ -10,7 +10,6 @@ const CardModal = ({ showModal, onClose, cardDetails }) => {
   const [checkList, setCheckList] = useState([]);
   const [openPopover, setOpenPopover] = useState(null);
   const [checkListName, setCheckListName] = useState('');
-  const [error, setError] = useState('');
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState(''); 
@@ -18,22 +17,14 @@ const CardModal = ({ showModal, onClose, cardDetails }) => {
   useEffect(() => {
     if (showModal && cardDetails) {
       fetchCheckList(cardDetails.id)
-        .then((res) => {
-          setCheckList(res);
-        })
+        .then((res) => setCheckList(res))
         .catch((err) => {
-          setError(err);
-          setSnackbarMessage('Error fetching checklist');
+          setSnackbarMessage(`Error fetching checklist ${err}`);
           setSnackbarSeverity('error');
           setSnackbarOpen(true);
         });
     }
   }, [cardDetails, showModal]);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    handleAddCheckList();
-  };
 
   const handleAddCheckList = async () => {
     if (checkListName.trim() === "") {
@@ -47,14 +38,12 @@ const CardModal = ({ showModal, onClose, cardDetails }) => {
       const response = await postCheckList(cardDetails.id, checkListName);
       setCheckListName("");
       setOpenPopover(null);
-      const newCheckList = [...checkList, response];
-      setCheckList(newCheckList);
+      setCheckList([...checkList, response]);
       setSnackbarMessage('Checklist added');
       setSnackbarSeverity('success');
       setSnackbarOpen(true);
     } catch (err) {
-      setError(err);
-      setSnackbarMessage('Error adding checklist');
+      setSnackbarMessage(`Error adding checklist ${err}`);
       setSnackbarSeverity('error'); 
       setSnackbarOpen(true);
     }
@@ -63,46 +52,37 @@ const CardModal = ({ showModal, onClose, cardDetails }) => {
   const deleteChecklist = async (id) => {
     if (!id || id.trim() === "") return;
 
-    const newCheckList = checkList.filter((ele) => ele.id !== id);
-
     try {
       await deleteCheckList(id);
-      setCheckList(newCheckList);
+      setCheckList(checkList.filter((ele) => ele.id !== id));
       setSnackbarMessage('Checklist Deleted');
       setSnackbarSeverity('success');
       setSnackbarOpen(true);
     } catch (err) {
-      setError(err);
-      setSnackbarMessage('Error deleting checklist');
+      setSnackbarMessage(`Error deleting checklist ${err}`);
       setSnackbarSeverity('error');
       setSnackbarOpen(true);
     }
   };
 
-  const handlePopOverClick = (e) => {
-    setOpenPopover(e.currentTarget);
-  };
-
+  const handlePopOverClick = (e) => setOpenPopover(e.currentTarget);
   const open = Boolean(openPopover);
 
   if (cardDetails.id === '') return null;
 
   return (
     <>
-      <Dialog open={showModal} onClose={onClose}>
-        {!error ? (
+        <Dialog open={showModal} onClose={onClose}>
           <DialogContent className="max-w-[900px] h-[500px] w-[250px] sm:w-[400px] lg:w-[600px]">
-            <DialogTitle className="text-left uppercase text-[24px]">
-              {cardDetails.name}
-            </DialogTitle>
+            <DialogTitle className="text-left uppercase text-[24px]">{cardDetails.name}</DialogTitle>
 
             <Box className="w-full h-full flex items-center pt-5 overflow-hidden flex-col-reverse sm:flex-row justify-between">
               <Box className="w-4/6 h-[450px] overflow-y-auto">
-                {checkList && checkList.map((ele) => (
+                {checkList.map((ele) => (
                   <CheckList key={ele?.id} checkListData={ele} deleteCheckList={deleteChecklist} />
                 ))}
               </Box>
-              <Box className="w-full sm:w-2/6 sm:border-l-2 sm:h-full px-3 ">
+              <Box className="w-full sm:w-2/6 sm:border-l-2 sm:h-full px-3">
                 <Button
                   variant="outlined"
                   className="cursor-pointer border-2 shadow-md rounded-md p-2 text-center w-full"
@@ -115,12 +95,9 @@ const CardModal = ({ showModal, onClose, cardDetails }) => {
                   open={open}
                   anchorEl={openPopover}
                   onClose={() => setOpenPopover(null)}
-                  anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'left',
-                  }}
+                  anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
                 >
-                  <form onSubmit={handleSubmit} className="p-3">
+                  <FormControl className="p-3 w-full">
                     <TextField
                       fullWidth
                       variant="outlined"
@@ -137,31 +114,18 @@ const CardModal = ({ showModal, onClose, cardDetails }) => {
                     >
                       Add
                     </Button>
-                  </form>
+                  </FormControl>
                 </Popover>
               </Box>
             </Box>
           </DialogContent>
-        ) : (
-          <DialogContent className="text-center">
-            <Typography>{error}</Typography>
-          </DialogContent>
-        )}
-      </Dialog>
+        </Dialog>
 
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={3000}
-        onClose={() => setSnackbarOpen(false)}
-      >
-        <Alert
-          onClose={() => setSnackbarOpen(false)}
-          severity={snackbarSeverity}
-          className="w-full"
-        >
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
+        <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={() => setSnackbarOpen(false)}>
+            <Alert onClose={() => setSnackbarOpen(false)} severity={snackbarSeverity} className="w-full">
+            {snackbarMessage}
+            </Alert>
+        </Snackbar>
     </>
   );
 };

@@ -46,7 +46,7 @@ const HomePage = () => {
 
     try {
       const response = await postBoard(boardName);
-      setBoards([...boards, response.data]);
+      setBoards([...boards, response]);
       setBoardName("");
       setOpenPopover(null);
       setSuccessSnackbar({

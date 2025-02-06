@@ -1,5 +1,5 @@
 import Card from "@mui/material/Card";
-import { CardContent, CardHeader, Typography, Button } from "@mui/material";
+import { CardContent, CardHeader, Typography, Button, Snackbar, Alert, FormControl, TextField, IconButton, Box } from "@mui/material";
 import { MdOutlineArchive } from "react-icons/md";
 import { CiEdit, CiCirclePlus } from "react-icons/ci";
 import { RiDeleteBin6Line } from "react-icons/ri";
@@ -14,143 +14,140 @@ const ListCard = ({ list, handleArchive, handleModal }) => {
   const [card, setCard] = useState([]);
   const [showAddCard, setShowAddCard] = useState(false);
   const [cardName, setCardName] = useState('');
-  const [error, setError] = useState('');
+  const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
 
   useEffect(() => {
     fetchListCards(list.id)
       .then((res) => setCard(res))
-      .catch((err) => {setError(err)}
-      );
+      .catch((err) => showSnackbar(err.message, "error"));
   }, [list.id]);
 
-  const handleEdit = (...args) => {
-    
-    const [cardDetails] = args;
-    handleModal(cardDetails)
+  const showSnackbar = (message, severity) => {
+    setSnackbar({ open: true, message, severity });
   };
 
-  const handleDeleteCard = async(id) => {
+  const handleEdit = (cardDetails) => {
+    handleModal(cardDetails);
+  };
 
-    const newData = card.filter((ele) => {
-      return ele.id !== id;
-    });
-
-    setCard(newData);
-    try{
+  const handleDeleteCard = async (id) => {
+    try {
       await deleteCard(id);
-    }
-    catch(err){
-      setError(err)
+      const newData = card.filter((ele) => ele.id !== id);
+      setCard(newData);
+      showSnackbar("Card deleted successfully!", "success");
+    } catch (err) {
+      showSnackbar(err, "error");
     }
   };
 
-  const handleAddCard = async()=>{
-
+  const handleAddCard = async () => {
     if (cardName.trim() === "") {
-      setShowAddCard(!showAddCard);
+      setShowAddCard(false);
       return;
     }
 
-    try{
-      const response = await postCard(cardName, list.id)
-
-      const newList = [...card, response.data];
+    try {
+      const response = await postCard(cardName, list.id);
+      const newList = [...card, response];
       setCard(newList);
-      setShowAddCard(!showAddCard);
+      setShowAddCard(false);
       setCardName("");
+      showSnackbar("Card added successfully!", "success");
+    } catch (err) {
+      showSnackbar(err, "error");
     }
-    catch(err){
-      setError(err)
-    }
-  }
+  };
 
-  const handleSubmit = (e) =>{
-    e.preventDefault();
-    handleAddCard();
-  }
-
-  const handleShow = ()=>{
-    setShowAddCard((prev)=>!prev);
-  }
+  const handleShow = () => {
+    setShowAddCard((prev) => !prev);
+  };
 
   return (
     <Card className="min-w-[400px] bg-[#f1f2f4] outline-none border-0 h-max p-2">
-      {!error?
-      <>
-        <CardHeader
-          title={
-            <div className="flex justify-between items-center font-medium">
-              {list.name}
-              <span className="cursor-pointer" onClick={()=>handleArchive(list.id)}>
-                <MdOutlineArchive />
-              </span>
-            </div>
-          }
-        />
-
-        <CardContent>
-          {card.length !== 0 ? (
-            card.map((ele) => (
-              <div
-                key={ele.id}
-                className="bg-slate-100 px-3 py-2 rounded-2xl flex items-center justify-between group cursor-pointer mb-2"
-              >
-                <Typography>{ele.name}</Typography>
-                <div className="flex gap-1 opacity-0 group-hover:opacity-100">
-                  <CiEdit onClick={() => handleEdit(ele)} className="cursor-pointer" />
-                  <RiDeleteBin6Line
-                    onClick={() => handleDeleteCard(ele.id)}
-                    className="cursor-pointer"
-                  />
-                </div>
-              </div>
-            ))
-          ) : (
-            <Typography>No cards available</Typography>
-          )}
-        </CardContent>
-      </>
-      :
-      <h1>{error}</h1>
-      }
+      <CardHeader
+        title={
+          <Box className="flex justify-between items-center font-medium">
+            {list.name}
+            <span className="cursor-pointer" onClick={() => handleArchive(list.id)}>
+              <MdOutlineArchive />
+            </span>
+          </Box>
+        }
+      />
+      
+      <CardContent>
+        {card.length !== 0 ? (
+          card.map((ele) => (
+            <Box
+              key={ele.id}
+              className="bg-slate-100 px-3 py-2 rounded-2xl flex items-center justify-between group cursor-pointer mb-2"
+            >
+              <Typography>{ele.name}</Typography>
+              <Box className="flex gap-1 opacity-0 group-hover:opacity-100">
+                <CiEdit onClick={() => handleEdit(ele)} className="cursor-pointer mr-1" />
+                <RiDeleteBin6Line
+                  onClick={() => handleDeleteCard(ele.id)}
+                  className="cursor-pointer"
+                />
+              </Box>
+            </Box>
+          ))
+        ) : (
+          <Typography>No cards available</Typography>
+        )}
+      </CardContent>
 
       {showAddCard ? (
-          <form className="cursor-pointer rounded-full flex flex-col"  onSubmit={handleSubmit}>
-            <input
-              type="text"
-              className="w-full block p-2"
-              placeholder="Add Card..."
+        <Box className="cursor-pointer rounded-full flex flex-col">
+          <FormControl className="w-full">
+            <TextField
+              label="Add Card"
+              variant="outlined"
+              fullWidth
               value={cardName}
               onChange={(e) => setCardName(e.target.value)}
-              onKeyDown={(e)=>{if(e.key==='Enter') return handleAddCard}}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") handleAddCard();
+              }}
             />
+          </FormControl>
 
-            <div className="action_btn flex items-center justify-between mt-2 block-flex w-full">
-              <Button
-                className="bg-blue-800 text-white py-1 "
-                onClick={handleAddCard}
-              >
-                Add
-              </Button>
-              <span className="cursor-pointer text-xl" onClick={handleShow}>
-                <RxCross2 />
-              </span>
-            </div>
-          </form>
-        ) : (
-          <div
-            className="cursor-pointer hover:bg-black/10 py-2 px-4 rounded-full"
-            onClick={handleShow}
-          >
-            <p className="flex items-center text-lg">
-              <span className="mr-3 text-2xl ">
-                <CiCirclePlus />
-              </span>
-              Add Card
-            </p>
-          </div>
-        )}
+          <Box className="action_btn flex items-center justify-between mt-2 block-flex w-full">
+            <Button
+              className="bg-blue-800 text-white py-1"
+              onClick={handleAddCard}
+            >
+              Add
+            </Button>
+            <IconButton onClick={handleShow}>
+              <RxCross2 className="text-xl" />
+            </IconButton>
+          </Box>
+        </Box>
+      ) : (
+        <Box
+          className="cursor-pointer hover:bg-black/10 py-2 px-4 rounded-full"
+          onClick={handleShow}
+        >
+          <p className="flex items-center text-lg">
+            <span className="mr-3 text-2xl">
+              <CiCirclePlus />
+            </span>
+            Add New Card
+          </p>
+        </Box>
+      )}
 
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={3000}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+      >
+        <Alert onClose={() => setSnackbar({ ...snackbar, open: false })} severity={snackbar.severity} sx={{ width: "100%" }}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Card>
   );
 };

@@ -11,7 +11,6 @@ const Navbar = () => {
           <Typography
             variant="h6"
             component="div"
-            marginLeft={2}
             className="border-2 border-white px-4 py-1 rounded-lg cursor-pointer"
           >
             Boards
