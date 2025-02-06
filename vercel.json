@@ -1,12 +1,9 @@
 {
+    "version": 2,
     "rewrites": [
         {
-            "source": "/(.)",
-            "destination": "/"
-        },
-        {
-            "source": "/:a",
-            "destination": "/"
+            "source": "/(.*)",
+            "destination": "/index.html"
         }
     ]
 }
