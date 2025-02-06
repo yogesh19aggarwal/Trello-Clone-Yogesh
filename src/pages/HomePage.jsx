@@ -1,6 +1,16 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Popover, Skeleton, TextField, Button } from "@mui/material";
+import {
+  Popover,
+  Skeleton,
+  TextField,
+  Button,
+  Snackbar,
+  Alert,
+  Box,
+  Typography,
+  Grid2,
+} from "@mui/material";
 
 import { fetchBoards } from "../api/fetchApi";
 import { postBoard } from "../api/postApi";
@@ -11,7 +21,12 @@ const HomePage = () => {
   const [loading, setLoading] = useState(true);
   const [openPopover, setOpenPopover] = useState(null);
   const [boardName, setBoardName] = useState("");
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
+  const [successSnackbar, setSuccessSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -21,7 +36,7 @@ const HomePage = () => {
         setLoading(false);
       })
       .catch((err) => {
-        setError(err);
+        setError(err.toString());
       });
   }, []);
 
@@ -31,13 +46,33 @@ const HomePage = () => {
 
     try {
       const response = await postBoard(boardName);
-      setBoards([...boards, response.data]);
+      setBoards([...boards, response]);
       setBoardName("");
       setOpenPopover(null);
-      navigate(`/boards/${response.data.id}`);
-    } catch (error) {
-      setError(error);
+      setSuccessSnackbar({
+        open: true,
+        message: "Board created successfully!",
+        severity: "success",
+      });
+  
+      setTimeout(() => {
+        navigate(`/boards/${response.data.id}`);
+      }, 1000);
+    } catch (err) {
+      setError(err.toString());
     }
+  };
+
+  const handleBoardClick = (boardId) => {
+    setSuccessSnackbar({
+      open: true,
+      message: "Navigating to board...",
+      severity: "info",
+    });
+
+    setTimeout(() => {
+      navigate(`/boards/${boardId}`);
+    }, 1000);
   };
 
   const handleClick = (e) => {
@@ -48,47 +83,59 @@ const HomePage = () => {
     setOpenPopover(null);
   };
 
-  const open = Boolean(openPopover);
+  const popoverOpen = Boolean(openPopover);
 
   return (
-    <div className="flex flex-col w-full px-2 py-4 items-center">
-      <h1 className="text-3xl font-bold m-4 mb-8">Boards</h1>
+    <Box className="flex flex-col w-full px-2 py-4 items-center justify-center">
+      <Typography variant="h3" className="text-3xl font-bold m-4 mb-8">
+        Boards
+      </Typography>
 
-      <div className="grid grid-cols-1 min-[550px]:grid-cols-2 min-[850px]:grid-cols-3 min-[1250px]:grid-cols-4 gap-4 max-w-[1200px] mb-8 ">
-
-        {!error?
-          loading
-            ? new Array(10).fill(null).map((_, index) => (
+      <Grid2 container spacing={2} className="max-w-[1200px] mt-6 mb-8 justify-center">
+        {loading
+          ? Array.from(new Array(10)).map((_, index) => (
+              <Grid2 item xs={12} sm={6} md={4} lg={3} key={index}>
                 <Skeleton
-                  key={index}
                   variant="rectangular"
                   width={250}
                   height={150}
-                  className="rounded-lg"
+                  className="rounded"
                 />
-              ))
-            : 
-            boards.length !== 0?
+              </Grid2>
+            ))
+          : boards.length > 0 ? (
               boards.map((board, index) => (
-                <HomeBoardCard key={index} board={board} />
+                <Grid2 item xs={12} sm={6} md={4} lg={3} key={index}>
+                  <Box onClick={() => handleBoardClick(board.id)} className="cursor-pointer">
+                    <HomeBoardCard board={board} />
+                  </Box>
+                </Grid2>
               ))
-              :<h1 className='text-3xl justify-self-center'>There are no boards</h1>
-
-          :<h1 className='text-3xl justify-self-center'>{error}</h1>
-        } 
+            ) : (
+              <Grid2 item xs={12}>
+                <Typography variant="h4" align="center">
+                  There are no boards
+                </Typography>
+              </Grid2>
+            )}
 
         {!loading && (
-            <div
-              onClick={handleClick}
-              className="w-[220px] h-[100px] bg-slate-500 rounded-lg shadow-lg flex items-center justify-center text-white font-bold text-lg cursor-pointer"
-            >
-              Create New Board
-            </div>
+          <Grid2 item xs={12} sm={6} md={4} lg={3}>
+            {boards.length < 10 && (
+              <Button
+                variant="contained"
+                onClick={handleClick}
+                className="w-[220px] h-[100px] bg-slate-500 text-white font-bold text-lg"
+              >
+                Create New Board
+              </Button>
+            )}
+          </Grid2>
         )}
-      </div>
+      </Grid2>
 
       <Popover
-        open={open}
+        open={popoverOpen}
         anchorEl={openPopover}
         onClose={handleClose}
         anchorOrigin={{
@@ -96,9 +143,10 @@ const HomePage = () => {
           horizontal: "left",
         }}
       >
-        <form
+        <Box
+          component="form"
           onSubmit={createNewBoard}
-          className="p-4 w-[300px] flex flex-col gap-4"
+          className="p-4 w-[300px] flex flex-col gap-2"
         >
           <TextField
             label="Name of the board"
@@ -107,17 +155,41 @@ const HomePage = () => {
             value={boardName}
             onChange={(e) => setBoardName(e.target.value)}
           />
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            className="bg-blue-600 text-white py-2"
-          >
+          <Button type="submit" variant="contained" color="primary">
             Create
           </Button>
-        </form>
+        </Box>
       </Popover>
-    </div>
+
+      <Snackbar
+        open={Boolean(error)}
+        onClose={() => setError("")}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert onClose={() => setError("")} severity="error" className="w-full">
+          {error}
+        </Alert>
+      </Snackbar>
+
+      <Snackbar
+        open={successSnackbar.open}
+        autoHideDuration={6000}
+        onClose={() =>
+          setSuccessSnackbar({ ...successSnackbar, open: false })
+        }
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert
+          onClose={() =>
+            setSuccessSnackbar({ ...successSnackbar, open: false })
+          }
+          severity={successSnackbar.severity}
+          className="w-full"
+        >
+          {successSnackbar.message}
+        </Alert>
+      </Snackbar>
+    </Box>
   );
 };
 

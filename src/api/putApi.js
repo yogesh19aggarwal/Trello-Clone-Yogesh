@@ -1,7 +1,7 @@
 import { AxiosInstance } from "./AxiosInstance";
+import { config } from "../config/config";
 
-const apiKey = import.meta.env.VITE_API_KEY;
-const apiToken = import.meta.env.VITE_API_TOKEN;
+const { apiKey, apiToken } = config
 
 async function putCard(id) {
 
