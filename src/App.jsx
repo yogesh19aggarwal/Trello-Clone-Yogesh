@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import BoardPage from "./pages/BoardPage";
@@ -8,23 +8,25 @@ import ErrorBoundary from "./errorBoundary/ErrorBoundary";
 import SignIn from "./components/auth/SignIn";
 
 const App = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    () => localStorage.getItem("isAuthenticated") === "true"
+  );
 
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  useEffect(() => {
+    localStorage.setItem("isAuthenticated", isAuthenticated);
+  }, [isAuthenticated]);
 
   return (
     <ErrorBoundary>
       <Routes>
         <Route path="/" element={isAuthenticated ? <Navigate to="/boards" replace /> : <Navigate to="/signin" replace />} />
-
         <Route path="/signin" element={<SignIn setIsAuthenticated={setIsAuthenticated} />} />
 
-        {isAuthenticated ? (
-          <Route path="/" element={<MainLayout />}>
+        {isAuthenticated && (
+          <Route path="/" element={<MainLayout setIsAuthenticated={setIsAuthenticated} />}>
             <Route path="/boards" element={<ErrorBoundary><HomePage /></ErrorBoundary>} />
-            <Route path="boards/:boardId" element={<ErrorBoundary><BoardPage /></ErrorBoundary>} />
+            <Route path="/boards/:boardId" element={<ErrorBoundary><BoardPage /></ErrorBoundary>} />
           </Route>
-        ) : (
-          <Route path="*" element={<Navigate to="/signin" replace />} />
         )}
 
         <Route path="*" element={<ErrorBoundary><NotFound /></ErrorBoundary>} />

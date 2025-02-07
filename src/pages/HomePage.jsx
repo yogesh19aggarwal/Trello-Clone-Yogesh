@@ -23,7 +23,7 @@ const HomePage = () => {
   const [boardName, setBoardName] = useState("");
   const [message, setMessage] = useState("");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [severity, setSeverity] = useState('sucsess');
+  const [severity, setSeverity] = useState('success');
   const navigate = useNavigate();
 
   useEffect(() => {

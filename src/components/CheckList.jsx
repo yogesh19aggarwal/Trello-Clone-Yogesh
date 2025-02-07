@@ -1,5 +1,5 @@
 import React,{ useState, useEffect } from "react";
-import { Button, Typography, Box, TextField, Paper, IconButton, Snackbar, Alert } from "@mui/material";
+import { Button, Typography, Box, TextField, Paper, IconButton} from "@mui/material";
 import { RxCross2 } from "react-icons/rx";
 import { FaPlus } from "react-icons/fa6";
 
@@ -7,6 +7,7 @@ import CheckItems from "./CheckItems";
 import { postCheckItem } from "../api/postApi";
 import { fetchCheckItems } from "../api/fetchApi";
 import { deleteCheckItem } from "../api/deleteApi";
+import SnackBarComponent from '../utils/SnackBarComponent' 
 import LinearProgressWithLabel from "./LinearProgressWithLabel";
 import ErrorBoundary from "../errorBoundary/ErrorBoundary";
 
@@ -14,16 +15,20 @@ const CheckList = ({ checkListData, deleteCheckList }) => {
   const [checkItems, setCheckItems] = useState([]);
   const [showAddCheckItem, setShowAddCheckItem] = useState(false);
   const [checkItemName, setCheckItemName] = useState("");
-  const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [severity, setSeverity] = useState('success');
+  const [message, setMessage] = useState('');
   
   useEffect(() => {
     fetchCheckItems(checkListData.id)
       .then((response) => setCheckItems(response))
-      .catch((err) => showSnackbar(err.message, "error"));
+      .catch((err) => showSnackbar(err, "error"));
   }, [checkListData.id]);
 
   const showSnackbar = (message, severity) => {
-    setSnackbar({ open: true, message, severity });
+    setMessage(message);
+    setSnackbarOpen(true);
+    setSeverity(severity)
   };
 
   function updateCheckItem(checkItemId, newState) {
@@ -110,11 +115,7 @@ const CheckList = ({ checkListData, deleteCheckList }) => {
         )}
       </Box>
 
-      <Snackbar open={snackbar.open} autoHideDuration={3000} onClose={() => setSnackbar({ ...snackbar, open: false })}>
-        <Alert onClose={() => setSnackbar({ ...snackbar, open: false })} severity={snackbar.severity} sx={{ width: "100%" }}>
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
+      <SnackBarComponent message={message} snackbarOpen={snackbarOpen} setSnackbarOpen={setSnackbarOpen} severity={severity}/>
     </Paper>
   );
 };
