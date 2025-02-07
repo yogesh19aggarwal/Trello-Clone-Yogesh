@@ -1,11 +1,20 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { TextField, Button, Typography, Container, Box } from "@mui/material";
+import {
+  TextField,
+  Button,
+  Typography,
+  Container,
+  Box,
+  Snackbar,
+  Alert,
+} from "@mui/material";
 
 const SignIn = ({ setIsAuthenticated }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
   const navigate = useNavigate();
 
   const hardcodedUsername = "user123";
@@ -16,7 +25,8 @@ const SignIn = ({ setIsAuthenticated }) => {
 
     if (username === hardcodedUsername && password === hardcodedPassword) {
       setIsAuthenticated(true);
-      navigate("/boards"); 
+      setSnackbarOpen(true);
+      setTimeout(() => navigate("/boards"), 1500);
     } else {
       setErrorMessage("Invalid username or password");
     }
@@ -33,7 +43,9 @@ const SignIn = ({ setIsAuthenticated }) => {
           Sign In
         </Typography>
 
-        {errorMessage && <div className="text-red-500 text-center mb-4">{errorMessage}</div>}
+        {errorMessage && (
+          <div className="text-red-500 text-center mb-4">{errorMessage}</div>
+        )}
 
         <TextField
           label="Username"
@@ -56,10 +68,27 @@ const SignIn = ({ setIsAuthenticated }) => {
           placeholder="Enter password"
         />
 
-        <Button type="submit" variant="contained" color="primary" fullWidth className="mb-4">
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          fullWidth
+          className="mb-4"
+        >
           Sign In
         </Button>
       </Box>
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={2000}
+        anchorOrigin={{vertical:'top', horizontal:'right'}}
+        onClose={() => setSnackbarOpen(false)}
+      >
+        <Alert severity="success" onClose={() => setSnackbarOpen(false)}>
+          Successfully Signed In!
+        </Alert>
+      </Snackbar>
     </Container>
   );
 };

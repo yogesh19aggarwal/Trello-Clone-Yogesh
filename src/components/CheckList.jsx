@@ -110,7 +110,7 @@ const CheckList = ({ checkListData, deleteCheckList }) => {
         )}
       </Box>
 
-      <Snackbar open={snackbar.open} autoHideDuration={3000} onClose={() => setSnackbar({ ...snackbar, open: false })}>
+      <Snackbar open={snackbar.open} autoHideDuration={3000} anchorOrigin={{vertical:'top', horizontal:'right'}} onClose={() => setSnackbar({ ...snackbar, open: false })}>
         <Alert onClose={() => setSnackbar({ ...snackbar, open: false })} severity={snackbar.severity} sx={{ width: "100%" }}>
           {snackbar.message}
         </Alert>

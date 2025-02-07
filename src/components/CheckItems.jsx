@@ -52,6 +52,7 @@ const CheckItems = ({ itemData, deleteCheckItem, idCard, updateCheckItem }) => {
       <Snackbar
         open={snackbar.open}
         autoHideDuration={3000}
+        anchorOrigin={{vertical:'top', horizontal:'right'}}
         onClose={handleCloseSnackbar}
       >
         <Alert

@@ -145,7 +145,7 @@ const BoardPage = () => {
         <CardModal showModal={showModal} onClose={() => setShowModal(false)} cardDetails={cardDetails} />
       </ErrorBoundary>
 
-      <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={() => setSnackbarOpen(false)}>
+      <Snackbar open={snackbarOpen} autoHideDuration={3000} anchorOrigin={{vertical:'top', horizontal:'right'}} onClose={() => setSnackbarOpen(false)}>
         <Alert severity="info" onClose={() => setSnackbarOpen(false)}>
           {snackbarMessage}
         </Alert>

@@ -143,6 +143,7 @@ const ListCard = ({ list, handleArchive, handleModal }) => {
       <Snackbar
         open={snackbar.open}
         autoHideDuration={3000}
+        anchorOrigin={{vertical:'top', horizontal:'right'}}
         onClose={() => setSnackbar({ ...snackbar, open: false })}
       >
         <Alert onClose={() => setSnackbar({ ...snackbar, open: false })} severity={snackbar.severity} sx={{ width: "100%" }}>

@@ -57,7 +57,7 @@ const HomePage = () => {
       });
   
       setTimeout(() => {
-        navigate(`/boards/${response.data.id}`);
+        navigate(`/boards/${response.id}`);
       }, 1000);
     } catch (err) {
       setError(err.toString());
@@ -177,10 +177,10 @@ const HomePage = () => {
       <Snackbar
         open={successSnackbar.open}
         autoHideDuration={6000}
+        anchorOrigin={{vertical:'top', horizontal:'right'}}
         onClose={() =>
           setSuccessSnackbar({ ...successSnackbar, open: false })
         }
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
         <Alert
           onClose={() =>

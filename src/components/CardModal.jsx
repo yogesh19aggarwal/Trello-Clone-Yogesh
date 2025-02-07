@@ -124,7 +124,7 @@ const CardModal = ({ showModal, onClose, cardDetails }) => {
           </DialogContent>
         </Dialog>
 
-        <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={() => setSnackbarOpen(false)}>
+        <Snackbar open={snackbarOpen} autoHideDuration={3000} anchorOrigin={{vertical:'top', horizontal:'right'}} onClose={() => setSnackbarOpen(false)}>
             <Alert onClose={() => setSnackbarOpen(false)} severity={snackbarSeverity} className="w-full">
             {snackbarMessage}
             </Alert>
