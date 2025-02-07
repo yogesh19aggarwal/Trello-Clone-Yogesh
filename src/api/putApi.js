@@ -22,6 +22,8 @@ async function putCheckItems(cardId, itemId, state) {
         const response = await AxiosInstance.put(
             `cards/${cardId}/checkItem/${itemId}?state=${state}`
         );
+        console.log(state, response.data);
+
         return response.data;
     }
     catch (err) {
