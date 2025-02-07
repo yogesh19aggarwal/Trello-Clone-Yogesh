@@ -1,6 +1,7 @@
 import LinearProgress from "@mui/material/LinearProgress";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
+import React from "react";
 
 function LinearProgressWithLabel({ value }) {
   return (
@@ -11,7 +12,7 @@ function LinearProgressWithLabel({ value }) {
         </Typography>
       </Box>
       <Box className="w-full mr-1 ml-4">
-        <LinearProgress variant="determinate" value={value} />
+        <LinearProgress variant="determinate" value={Number(value)} />
       </Box>
     </Box>
   );

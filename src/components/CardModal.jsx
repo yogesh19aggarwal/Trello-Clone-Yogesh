@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
+import React,{ useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogTitle, Button, Popover, Snackbar, Alert, Box, TextField, FormControl } from '@mui/material';
 
 import { fetchCheckList } from '../api/fetchApi';
 import { deleteCheckList } from '../api/deleteApi';
 import CheckList from './CheckList';
 import { postCheckList } from '../api/postApi';
+import ErrorBoundary from '../errorBoundary/ErrorBoundary';
 
 const CardModal = ({ showModal, onClose, cardDetails }) => {
   const [checkList, setCheckList] = useState([]);
@@ -79,7 +80,9 @@ const CardModal = ({ showModal, onClose, cardDetails }) => {
             <Box className="w-full h-full flex items-center pt-5 overflow-hidden flex-col-reverse sm:flex-row justify-between">
               <Box className="w-4/6 h-[450px] overflow-y-auto">
                 {checkList.map((ele) => (
-                  <CheckList key={ele?.id} checkListData={ele} deleteCheckList={deleteChecklist} />
+                  <ErrorBoundary key={ele?.id}>
+                    <CheckList  checkListData={ele} deleteCheckList={deleteChecklist} />
+                  </ErrorBoundary>
                 ))}
               </Box>
               <Box className="w-full sm:w-2/6 sm:border-l-2 sm:h-full px-3">

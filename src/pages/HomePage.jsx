@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Popover,
@@ -14,6 +14,7 @@ import {
 
 import { fetchBoards } from "../api/fetchApi";
 import { postBoard } from "../api/postApi";
+import ErrorBoundary from '../errorBoundary/ErrorBoundary'
 import HomeBoardCard from "../components/HomeBoardCard";
 
 const HomePage = () => {
@@ -106,9 +107,11 @@ const HomePage = () => {
           : boards.length > 0 ? (
               boards.map((board, index) => (
                 <Grid2 item xs={12} sm={6} md={4} lg={3} key={index}>
-                  <Box onClick={() => handleBoardClick(board.id)} className="cursor-pointer">
-                    <HomeBoardCard board={board} />
-                  </Box>
+                  <ErrorBoundary>
+                    <Box onClick={() => handleBoardClick(board.id)} className="cursor-pointer">
+                      <HomeBoardCard board={board} />
+                    </Box>
+                  </ErrorBoundary>
                 </Grid2>
               ))
             ) : (

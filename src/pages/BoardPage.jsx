@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React,{ useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { FaPlus } from "react-icons/fa6";
 import { RxCross2 } from "react-icons/rx";
@@ -19,6 +19,7 @@ import ListCard from "../components/ListCard";
 import CardModal from "../components/CardModal";
 import { putCard } from "../api/putApi";
 import { postList } from "../api/postApi";
+import ErrorBoundary from "../errorBoundary/ErrorBoundary";
 
 const BoardPage = () => {
   const [lists, setLists] = useState([]);
@@ -104,7 +105,9 @@ const BoardPage = () => {
           ))
         ) : (
           lists.map((list) => (
-            <ListCard key={list.id} list={list} handleModal={handleCardId} handleArchive={handleArchive} />
+            <ErrorBoundary key={list.id}>
+              <ListCard list={list} handleModal={handleCardId} handleArchive={handleArchive} />
+            </ErrorBoundary>
           ))
         )}
 
@@ -138,7 +141,9 @@ const BoardPage = () => {
         )}
       </Box>
 
-      <CardModal showModal={showModal} onClose={() => setShowModal(false)} cardDetails={cardDetails} />
+      <ErrorBoundary>
+        <CardModal showModal={showModal} onClose={() => setShowModal(false)} cardDetails={cardDetails} />
+      </ErrorBoundary>
 
       <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={() => setSnackbarOpen(false)}>
         <Alert severity="info" onClose={() => setSnackbarOpen(false)}>

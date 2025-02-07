@@ -1,6 +1,7 @@
 import { AppBar, Box, Toolbar } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import { Link } from "react-router-dom";
+import React from "react";
 
 const Navbar = () => {
   return (
