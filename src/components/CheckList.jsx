@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React,{ useState, useEffect } from "react";
 import { Button, Typography, Box, TextField, Paper, IconButton, Snackbar, Alert } from "@mui/material";
 import { RxCross2 } from "react-icons/rx";
 import { FaPlus } from "react-icons/fa6";
@@ -8,6 +8,7 @@ import { postCheckItem } from "../api/postApi";
 import { fetchCheckItems } from "../api/fetchApi";
 import { deleteCheckItem } from "../api/deleteApi";
 import LinearProgressWithLabel from "./LinearProgressWithLabel";
+import ErrorBoundary from "../errorBoundary/ErrorBoundary";
 
 const CheckList = ({ checkListData, deleteCheckList }) => {
   const [checkItems, setCheckItems] = useState([]);
@@ -34,7 +35,7 @@ const CheckList = ({ checkListData, deleteCheckList }) => {
   }
 
   const progress = checkItems.filter((item) => item.state === "complete");
-  let progressBar = Math.round((progress.length / checkItems.length) * 100);
+  let progressBar = Number(Math.round((progress.length / checkItems.length) * 100));
 
   const showList = () => setShowAddCheckItem(!showAddCheckItem);
 
@@ -84,7 +85,9 @@ const CheckList = ({ checkListData, deleteCheckList }) => {
 
       {checkItems.length > 0 &&
         checkItems.map((ele) => (
-          <CheckItems key={ele.id} itemData={ele} updateCheckItem={updateCheckItem} deleteCheckItem={deleteCheckItemFunc} idCard={checkListData.idCard} />
+          <ErrorBoundary key={ele.id}>
+            <CheckItems  itemData={ele} updateCheckItem={updateCheckItem} deleteCheckItem={deleteCheckItemFunc} idCard={checkListData.idCard} />
+          </ErrorBoundary>
         ))}
 
       <Box className="mt-2">

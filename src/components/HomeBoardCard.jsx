@@ -1,4 +1,5 @@
 import { Box, Typography } from "@mui/material";
+import React from "react";
 
 const HomeBoardCard = ({ board }) => {
   const backgroundStyle = board.prefs.backgroundColor

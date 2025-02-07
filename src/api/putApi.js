@@ -1,13 +1,9 @@
 import { AxiosInstance } from "./AxiosInstance";
-import { config } from "../config/config";
-
-const { apiKey, apiToken } = config
 
 async function putCard(id) {
-
     try {
         const response = await AxiosInstance.put(
-            `lists/${id}/closed?value=true&key=${apiKey}&token=${apiToken}`
+            `lists/${id}/closed?value=true`
         );
         if (response.status == 200) {
             return response.status;
@@ -22,12 +18,10 @@ async function putCard(id) {
 }
 
 async function putCheckItems(cardId, itemId, state) {
-
     try {
         const response = await AxiosInstance.put(
-            `cards/${cardId}/checkItem/${itemId}?key=${apiKey}&token=${apiToken}&state=${state}`
+            `cards/${cardId}/checkItem/${itemId}?state=${state}`
         );
-
         return response.data;
     }
     catch (err) {
@@ -35,5 +29,4 @@ async function putCheckItems(cardId, itemId, state) {
     }
 }
 
-
-export { putCard, putCheckItems }
+export { putCard, putCheckItems };
