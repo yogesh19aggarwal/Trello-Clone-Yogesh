@@ -1,11 +1,21 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { TextField, Button, Typography, Container, Box } from "@mui/material";
+import {
+  TextField,
+  Button,
+  Typography,
+  Container,
+  Box,
+} from "@mui/material";
+import SnackBarComponent from "../../utils/SnackBarComponent";
 
 const SignIn = ({ setIsAuthenticated }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [message, setMessage] = useState('');
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [severity, setSeverity] = useState('Success')
   const navigate = useNavigate();
 
   const hardcodedUsername = "user123";
@@ -16,7 +26,10 @@ const SignIn = ({ setIsAuthenticated }) => {
 
     if (username === hardcodedUsername && password === hardcodedPassword) {
       setIsAuthenticated(true);
-      navigate("/boards"); 
+      setSnackbarOpen(true);
+      setSeverity('success');
+      setMessage('Successfully Logged In')
+      setTimeout(() => navigate("/boards"), 1500);
     } else {
       setErrorMessage("Invalid username or password");
     }
@@ -33,7 +46,9 @@ const SignIn = ({ setIsAuthenticated }) => {
           Sign In
         </Typography>
 
-        {errorMessage && <div className="text-red-500 text-center mb-4">{errorMessage}</div>}
+        {errorMessage && (
+          <Box className="text-red-500 text-center mb-4">{errorMessage}</Box>
+        )}
 
         <TextField
           label="Username"
@@ -56,10 +71,18 @@ const SignIn = ({ setIsAuthenticated }) => {
           placeholder="Enter password"
         />
 
-        <Button type="submit" variant="contained" color="primary" fullWidth className="mb-4">
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          fullWidth
+          className="mb-4"
+        >
           Sign In
         </Button>
       </Box>
+
+      <SnackBarComponent severity={severity} message={message} snackbarOpen={snackbarOpen} setSnackbarOpen={setSnackbarOpen}/>
     </Container>
   );
 };

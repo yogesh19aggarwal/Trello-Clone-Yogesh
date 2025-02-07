@@ -8,8 +8,6 @@ import {
   Skeleton,
   Button,
   TextField,
-  Snackbar,
-  Alert,
   Paper,
   IconButton,
 } from "@mui/material";
@@ -20,6 +18,7 @@ import CardModal from "../components/CardModal";
 import { putCard } from "../api/putApi";
 import { postList } from "../api/postApi";
 import ErrorBoundary from "../errorBoundary/ErrorBoundary";
+import SnackBarComponent from "../utils/SnackBarComponent";
 
 const BoardPage = () => {
   const [lists, setLists] = useState([]);
@@ -29,6 +28,7 @@ const BoardPage = () => {
   const [cardDetails, setCardDetails] = useState({});
   const [showAddList, setShowAddList] = useState(false);
   const [listName, setListName] = useState("");
+  const [severity, setSeverity] = useState('success');
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const { boardId } = useParams();
@@ -36,19 +36,20 @@ const BoardPage = () => {
   useEffect(() => {
     fetchOneBoard(boardId)
       .then((res) => setBoardData(res))
-      .catch((err) => handleSnackbar(err.toString()));
+      .catch((err) => handleSnackbar(err.toString(), 'error'));
 
     fetchLists(boardId)
       .then((res) => {
         setLists(res);
         setLoading(false);
       })
-      .catch((err) => handleSnackbar(err.toString()));
+      .catch((err) => handleSnackbar(err.toString(), 'error'));
   }, [boardId]);
 
-  const handleSnackbar = (message) => {
+  const handleSnackbar = (message, messageType) => {
     setSnackbarMessage(message);
     setSnackbarOpen(true);
+    setSeverity(messageType);
   };
 
   const handleCardId=(...args)=>{
@@ -59,7 +60,7 @@ const BoardPage = () => {
 
   const handleAddList = async () => {
     if (listName.trim() === "") {
-      handleSnackbar("List name cannot be empty.");
+      handleSnackbar("List name cannot be empty.", 'error');
       return;
     }
 
@@ -68,9 +69,9 @@ const BoardPage = () => {
       setLists([...lists, response]);
       setShowAddList(false);
       setListName("");
-      handleSnackbar("List added successfully.");
+      handleSnackbar("List added successfully.", 'success');
     } catch (err) {
-      handleSnackbar(err.toString());
+      handleSnackbar(err.toString(),'error');
     }
   };
 
@@ -79,10 +80,10 @@ const BoardPage = () => {
       const response = await putCard(listId);
       if (response === 200) {
         setLists(lists.filter(({ id }) => id !== listId));
-        handleSnackbar("List archived successfully.");
+        handleSnackbar("List archived successfully.", 'info');
       }
     } catch (err) {
-      handleSnackbar(err.toString());
+      handleSnackbar(err.toString(), 'error');
     }
   };
 
@@ -145,11 +146,7 @@ const BoardPage = () => {
         <CardModal showModal={showModal} onClose={() => setShowModal(false)} cardDetails={cardDetails} />
       </ErrorBoundary>
 
-      <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={() => setSnackbarOpen(false)}>
-        <Alert severity="info" onClose={() => setSnackbarOpen(false)}>
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
+      <SnackBarComponent message={snackbarMessage} snackbarOpen={snackbarOpen} setSnackbarOpen={setSnackbarOpen} severity={severity}/>
     </Box>
   );
 };

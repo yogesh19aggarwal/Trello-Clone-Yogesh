@@ -5,8 +5,6 @@ import {
   Skeleton,
   TextField,
   Button,
-  Snackbar,
-  Alert,
   Box,
   Typography,
   Grid2,
@@ -16,18 +14,16 @@ import { fetchBoards } from "../api/fetchApi";
 import { postBoard } from "../api/postApi";
 import ErrorBoundary from '../errorBoundary/ErrorBoundary'
 import HomeBoardCard from "../components/HomeBoardCard";
+import SnackBarComponent from "../utils/SnackBarComponent";
 
 const HomePage = () => {
   const [boards, setBoards] = useState([]);
   const [loading, setLoading] = useState(true);
   const [openPopover, setOpenPopover] = useState(null);
   const [boardName, setBoardName] = useState("");
-  const [error, setError] = useState("");
-  const [successSnackbar, setSuccessSnackbar] = useState({
-    open: false,
-    message: "",
-    severity: "success",
-  });
+  const [message, setMessage] = useState("");
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [severity, setSeverity] = useState('sucsess');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -37,7 +33,9 @@ const HomePage = () => {
         setLoading(false);
       })
       .catch((err) => {
-        setError(err.toString());
+        setSnackbarOpen(true);
+        setSeverity('error');
+        setMessage(err.toString());
       });
   }, []);
 
@@ -50,26 +48,22 @@ const HomePage = () => {
       setBoards([...boards, response]);
       setBoardName("");
       setOpenPopover(null);
-      setSuccessSnackbar({
-        open: true,
-        message: "Board created successfully!",
-        severity: "success",
-      });
+      setMessage('Board created successfully');
+      setSeverity('success');
+      setSnackbarOpen(true);
   
       setTimeout(() => {
         navigate(`/boards/${response.data.id}`);
       }, 1000);
     } catch (err) {
-      setError(err.toString());
+      setMessage(err.toString());
     }
   };
 
   const handleBoardClick = (boardId) => {
-    setSuccessSnackbar({
-      open: true,
-      message: "Navigating to board...",
-      severity: "info",
-    });
+    setSnackbarOpen(true);
+    setMessage('Navigating to board...');
+    setSeverity('info');
 
     setTimeout(() => {
       navigate(`/boards/${boardId}`);
@@ -164,34 +158,7 @@ const HomePage = () => {
         </Box>
       </Popover>
 
-      <Snackbar
-        open={Boolean(error)}
-        onClose={() => setError("")}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      >
-        <Alert onClose={() => setError("")} severity="error" className="w-full">
-          {error}
-        </Alert>
-      </Snackbar>
-
-      <Snackbar
-        open={successSnackbar.open}
-        autoHideDuration={6000}
-        onClose={() =>
-          setSuccessSnackbar({ ...successSnackbar, open: false })
-        }
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      >
-        <Alert
-          onClose={() =>
-            setSuccessSnackbar({ ...successSnackbar, open: false })
-          }
-          severity={successSnackbar.severity}
-          className="w-full"
-        >
-          {successSnackbar.message}
-        </Alert>
-      </Snackbar>
+      <SnackBarComponent severity={severity} message={message} setSnackbarOpen={setSnackbarOpen} snackbarOpen={snackbarOpen}/>
     </Box>
   );
 };
