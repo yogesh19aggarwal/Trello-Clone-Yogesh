@@ -15,7 +15,6 @@ const Navbar = ({ setIsAuthenticated }) => {
     handleSnackbar('Logout Successful', 'success')
     setTimeout(()=>{
       setIsAuthenticated(false);
-      localStorage.removeItem("isAuthenticated");
       navigate("/signin");
     },500);
   };

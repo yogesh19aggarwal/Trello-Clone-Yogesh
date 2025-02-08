@@ -1,6 +1,15 @@
 import React from "react";
 import Card from "@mui/material/Card";
-import { CardContent, CardHeader, Typography, Button, Snackbar, Alert, FormControl, TextField, IconButton, Box } from "@mui/material";
+import {
+  CardContent,
+  CardHeader,
+  Typography,
+  Button,
+  FormControl,
+  TextField,
+  IconButton,
+  Box,
+} from "@mui/material";
 import { MdOutlineArchive } from "react-icons/md";
 import { CiEdit, CiCirclePlus } from "react-icons/ci";
 import { RiDeleteBin6Line } from "react-icons/ri";
@@ -10,12 +19,17 @@ import { useEffect, useState } from "react";
 import { fetchListCards } from "../api/fetchApi";
 import { deleteCard } from "../api/deleteApi";
 import { postCard } from "../api/postApi";
+import SnackBarComponent from "../utils/SnackBarComponent";
 
 const ListCard = ({ list, handleArchive, handleModal }) => {
   const [card, setCard] = useState([]);
   const [showAddCard, setShowAddCard] = useState(false);
-  const [cardName, setCardName] = useState('');
-  const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
+  const [cardName, setCardName] = useState("");
+  const [snackbar, setSnackbar] = useState({
+    message: "",
+    severity: "success",
+  });
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   useEffect(() => {
     fetchListCards(list.id)
@@ -24,7 +38,8 @@ const ListCard = ({ list, handleArchive, handleModal }) => {
   }, [list.id]);
 
   const showSnackbar = (message, severity) => {
-    setSnackbar({ open: true, message, severity });
+    setSnackbarOpen(true);
+    setSnackbar({ message, severity });
   };
 
   const handleEdit = (cardDetails) => {
@@ -70,13 +85,16 @@ const ListCard = ({ list, handleArchive, handleModal }) => {
         title={
           <Box className="flex justify-between items-center font-medium">
             {list.name}
-            <span className="cursor-pointer" onClick={() => handleArchive(list.id)}>
+            <span
+              className="cursor-pointer"
+              onClick={() => handleArchive(list.id)}
+            >
               <MdOutlineArchive />
             </span>
           </Box>
         }
       />
-      
+
       <CardContent>
         {card.length !== 0 ? (
           card.map((ele) => (
@@ -86,7 +104,10 @@ const ListCard = ({ list, handleArchive, handleModal }) => {
             >
               <Typography>{ele.name}</Typography>
               <Box className="flex gap-1 opacity-0 group-hover:opacity-100">
-                <CiEdit onClick={() => handleEdit(ele)} className="cursor-pointer mr-1" />
+                <CiEdit
+                  onClick={() => handleEdit(ele)}
+                  className="cursor-pointer mr-1"
+                />
                 <RiDeleteBin6Line
                   onClick={() => handleDeleteCard(ele.id)}
                   className="cursor-pointer"
@@ -140,15 +161,12 @@ const ListCard = ({ list, handleArchive, handleModal }) => {
         </Box>
       )}
 
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={3000}
-        onClose={() => setSnackbar({ ...snackbar, open: false })}
-      >
-        <Alert onClose={() => setSnackbar({ ...snackbar, open: false })} severity={snackbar.severity} sx={{ width: "100%" }}>
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
+      <SnackBarComponent
+        message={snackbar.message}
+        severity={snackbar.severity}
+        snackbarOpen={snackbarOpen}
+        setSnackbarOpen={setSnackbarOpen}
+      />
     </Card>
   );
 };

@@ -35,7 +35,10 @@ const BoardPage = () => {
 
   useEffect(() => {
     fetchOneBoard(boardId)
-      .then((res) => setBoardData(res))
+      .then((res) => {
+        setBoardData(res);
+        document.title = res.name? `${String(res.name).toUpperCase()} - Trello Clone`: 'Trello Clone';
+      })
       .catch((err) => handleSnackbar(err.toString(), 'error'));
 
     fetchLists(boardId)
@@ -122,7 +125,7 @@ const BoardPage = () => {
             Add new list
           </Button>
         ) : (
-          <Paper className="min-w-[300px] p-4">
+          <Paper className="!min-w-[350px] p-4 !h-[150px]">
             <TextField
               fullWidth
               placeholder="Add List..."
@@ -130,7 +133,7 @@ const BoardPage = () => {
               onChange={(e) => setListName(e.target.value)}
               className="mb-4"
             />
-            <Box className="flex justify-between">
+            <Box className="flex justify-between mt-2">
               <Button variant="contained" color="primary" onClick={handleAddList}>
                 Add
               </Button>
