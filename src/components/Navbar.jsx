@@ -1,34 +1,33 @@
 import { AppBar, Box, Toolbar, Button } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import { Link, useNavigate } from "react-router-dom";
-import React, { useState } from "react";
+import React, { useContext } from "react";
 
-import SnackBarComponent from "../utils/SnackBarComponent";
+import { SnackbarContext } from "../layouts/MainLayout";
 
 const Navbar = ({ setIsAuthenticated }) => {
-  const [message, setMessage] = useState('');
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [severity, setSeverity] = useState('success');
   const navigate = useNavigate();
 
+  const { setMessage, setSeverity, setSnackbarOpen } =
+    useContext(SnackbarContext);
+
   const handleLogout = () => {
-    handleSnackbar('Logout Successful', 'success')
-    setTimeout(()=>{
+    handleSnackbar("Logout Successful", "success");
+    setTimeout(() => {
       setIsAuthenticated(false);
       navigate("/signin");
-    },500);
+    }, 500);
   };
 
-  const handleSnackbar = (message, severity)=>{
+  const handleSnackbar = (message, severity) => {
     setMessage(message);
     setSeverity(severity);
     setSnackbarOpen(true);
-  }
+  };
 
   return (
     <AppBar position="static" sx={{ backgroundColor: "#1E3A8A" }}>
       <Toolbar className="flex justify-between">
-        
         <Link to="/" className="no-underline text-white">
           <Typography
             variant="h6"
@@ -50,10 +49,7 @@ const Navbar = ({ setIsAuthenticated }) => {
         <Button variant="contained" color="error" onClick={handleLogout}>
           Logout
         </Button>
-        
       </Toolbar>
-
-      <SnackBarComponent message={message} snackbarOpen={snackbarOpen} setSnackbarOpen={setSnackbarOpen} severity={severity}/>
     </AppBar>
   );
 };

@@ -1,19 +1,17 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { Checkbox, IconButton, Typography, Box } from "@mui/material";
 
 import { putCheckItems } from "../api/putApi";
-import SnackBarComponent from "../utils/SnackBarComponent";
+import { SnackbarContext } from "../layouts/MainLayout";
 
 const CheckItems = ({ itemData, deleteCheckItem, idCard, updateCheckItem }) => {
   const [checked, setChecked] = useState(
     itemData.state === "complete" ? true : false
   );
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbar, setSnackbar] = useState({
-    message: "",
-    severity: "success",
-  });
+
+  const { setMessage, setSnackbarOpen, setSeverity } =
+    useContext(SnackbarContext);
 
   const updateCheckItemState = async () => {
     setChecked((prev) => !prev);
@@ -30,7 +28,8 @@ const CheckItems = ({ itemData, deleteCheckItem, idCard, updateCheckItem }) => {
 
   const showSnackbar = (message, severity) => {
     setSnackbarOpen(true);
-    setSnackbar({ message, severity });
+    setMessage(message);
+    setSeverity(severity);
   };
 
   return (
@@ -51,13 +50,6 @@ const CheckItems = ({ itemData, deleteCheckItem, idCard, updateCheckItem }) => {
       >
         <RiDeleteBin6Line />
       </IconButton>
-
-      <SnackBarComponent
-        message={snackbar.message}
-        severity={snackbar.severity}
-        snackbarOpen={snackbarOpen}
-        setSnackbarOpen={setSnackbarOpen}
-      />
     </Box>
   );
 };

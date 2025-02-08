@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import Card from "@mui/material/Card";
 import {
   CardContent,
@@ -19,17 +19,15 @@ import { useEffect, useState } from "react";
 import { fetchListCards } from "../api/fetchApi";
 import { deleteCard } from "../api/deleteApi";
 import { postCard } from "../api/postApi";
-import SnackBarComponent from "../utils/SnackBarComponent";
+import { SnackbarContext } from "../layouts/MainLayout";
 
 const ListCard = ({ list, handleArchive, handleModal }) => {
   const [card, setCard] = useState([]);
   const [showAddCard, setShowAddCard] = useState(false);
   const [cardName, setCardName] = useState("");
-  const [snackbar, setSnackbar] = useState({
-    message: "",
-    severity: "success",
-  });
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+  const { setMessage, setSeverity, setSnackbarOpen } =
+    useContext(SnackbarContext);
 
   useEffect(() => {
     fetchListCards(list.id)
@@ -39,7 +37,8 @@ const ListCard = ({ list, handleArchive, handleModal }) => {
 
   const showSnackbar = (message, severity) => {
     setSnackbarOpen(true);
-    setSnackbar({ message, severity });
+    setMessage(message);
+    setSeverity(severity);
   };
 
   const handleEdit = (cardDetails) => {
@@ -160,13 +159,6 @@ const ListCard = ({ list, handleArchive, handleModal }) => {
           </p>
         </Box>
       )}
-
-      <SnackBarComponent
-        message={snackbar.message}
-        severity={snackbar.severity}
-        snackbarOpen={snackbarOpen}
-        setSnackbarOpen={setSnackbarOpen}
-      />
     </Card>
   );
 };

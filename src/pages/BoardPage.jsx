@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { FaPlus } from "react-icons/fa6";
 import { RxCross2 } from "react-icons/rx";
@@ -18,7 +18,7 @@ import CardModal from "../components/CardModal";
 import { putCard } from "../api/putApi";
 import { postList } from "../api/postApi";
 import ErrorBoundary from "../errorBoundary/ErrorBoundary";
-import SnackBarComponent from "../utils/SnackBarComponent";
+import { SnackbarContext } from "../layouts/MainLayout";
 
 const BoardPage = () => {
   const [lists, setLists] = useState([]);
@@ -28,10 +28,10 @@ const BoardPage = () => {
   const [cardDetails, setCardDetails] = useState({});
   const [showAddList, setShowAddList] = useState(false);
   const [listName, setListName] = useState("");
-  const [severity, setSeverity] = useState("success");
-  const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
   const { boardId } = useParams();
+
+  const { setMessage, setSnackbarOpen, setSeverity } =
+    useContext(SnackbarContext);
 
   useEffect(() => {
     fetchOneBoard(boardId)
@@ -52,7 +52,7 @@ const BoardPage = () => {
   }, [boardId]);
 
   const handleSnackbar = (message, messageType) => {
-    setSnackbarMessage(message);
+    setMessage(message);
     setSnackbarOpen(true);
     setSeverity(messageType);
   };
@@ -169,13 +169,6 @@ const BoardPage = () => {
           cardDetails={cardDetails}
         />
       </ErrorBoundary>
-
-      <SnackBarComponent
-        message={snackbarMessage}
-        snackbarOpen={snackbarOpen}
-        setSnackbarOpen={setSnackbarOpen}
-        severity={severity}
-      />
     </Box>
   );
 };

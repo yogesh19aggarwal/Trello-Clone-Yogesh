@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   Button,
   Typography,
@@ -14,17 +14,17 @@ import CheckItems from "./CheckItems";
 import { postCheckItem } from "../api/postApi";
 import { fetchCheckItems } from "../api/fetchApi";
 import { deleteCheckItem } from "../api/deleteApi";
-import SnackBarComponent from "../utils/SnackBarComponent";
 import LinearProgressWithLabel from "./LinearProgressWithLabel";
 import ErrorBoundary from "../errorBoundary/ErrorBoundary";
+import { SnackbarContext } from "../layouts/MainLayout";
 
 const CheckList = ({ checkListData, deleteCheckList }) => {
   const [checkItems, setCheckItems] = useState([]);
   const [showAddCheckItem, setShowAddCheckItem] = useState(false);
   const [checkItemName, setCheckItemName] = useState("");
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [severity, setSeverity] = useState("success");
-  const [message, setMessage] = useState("");
+
+  const { setMessage, setSeverity, setSnackbarOpen } =
+    useContext(SnackbarContext);
 
   useEffect(() => {
     fetchCheckItems(checkListData.id)
@@ -151,13 +151,6 @@ const CheckList = ({ checkListData, deleteCheckList }) => {
           </Button>
         )}
       </Box>
-
-      <SnackBarComponent
-        message={message}
-        snackbarOpen={snackbarOpen}
-        setSnackbarOpen={setSnackbarOpen}
-        severity={severity}
-      />
     </Paper>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   Dialog,
   DialogContent,
@@ -15,15 +15,15 @@ import { deleteCheckList } from "../api/deleteApi";
 import CheckList from "./CheckList";
 import { postCheckList } from "../api/postApi";
 import ErrorBoundary from "../errorBoundary/ErrorBoundary";
-import SnackBarComponent from "../utils/SnackBarComponent";
+import { SnackbarContext } from "../layouts/MainLayout";
 
 const CardModal = ({ showModal, onClose, cardDetails }) => {
   const [checkList, setCheckList] = useState([]);
   const [openPopover, setOpenPopover] = useState(null);
   const [checkListName, setCheckListName] = useState("");
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [severity, setSeverity] = useState("success");
+
+  const { setMessage, setSeverity, setSnackbarOpen } =
+    useContext(SnackbarContext);
 
   useEffect(() => {
     if (showModal && cardDetails) {
@@ -65,7 +65,7 @@ const CardModal = ({ showModal, onClose, cardDetails }) => {
   };
 
   const handleSnackbar = (message, messageType) => {
-    setSnackbarMessage(message);
+    setMessage(message);
     setSeverity(messageType);
     setSnackbarOpen(true);
   };
@@ -132,13 +132,6 @@ const CardModal = ({ showModal, onClose, cardDetails }) => {
           </Box>
         </DialogContent>
       </Dialog>
-
-      <SnackBarComponent
-        message={snackbarMessage}
-        severity={severity}
-        snackbarOpen={snackbarOpen}
-        setSnackbarOpen={setSnackbarOpen}
-      />
     </>
   );
 };

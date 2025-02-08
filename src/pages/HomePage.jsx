@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Popover,
@@ -14,17 +14,17 @@ import { fetchBoards } from "../api/fetchApi";
 import { postBoard } from "../api/postApi";
 import ErrorBoundary from "../errorBoundary/ErrorBoundary";
 import HomeBoardCard from "../components/HomeBoardCard";
-import SnackBarComponent from "../utils/SnackBarComponent";
+import { SnackbarContext } from "../layouts/MainLayout";
 
 const HomePage = () => {
   const [boards, setBoards] = useState([]);
   const [loading, setLoading] = useState(true);
   const [openPopover, setOpenPopover] = useState(null);
   const [boardName, setBoardName] = useState("");
-  const [message, setMessage] = useState("");
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [severity, setSeverity] = useState("success");
   const navigate = useNavigate();
+
+  const { setMessage, setSnackbarOpen, setSeverity } =
+    useContext(SnackbarContext);
 
   useEffect(() => {
     fetchBoards()
@@ -166,13 +166,6 @@ const HomePage = () => {
           </Button>
         </Box>
       </Popover>
-
-      <SnackBarComponent
-        severity={severity}
-        message={message}
-        setSnackbarOpen={setSnackbarOpen}
-        snackbarOpen={snackbarOpen}
-      />
     </Box>
   );
 };
