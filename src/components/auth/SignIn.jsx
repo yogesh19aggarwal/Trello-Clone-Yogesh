@@ -1,17 +1,16 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { TextField, Button, Typography, Container, Box } from "@mui/material";
-import { useContext } from "react";
-import { SnackbarContext } from "../../layouts/MainLayout";
+import SnackBarComponent from "../../utils/SnackBarComponent";
 
 const SignIn = ({ setIsAuthenticated }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [message, setMessage] = useState("");
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [severity, setSeverity] = useState("Success");
   const navigate = useNavigate();
-
-  const { setMessage, setSeverity, setSnackbarOpen } =
-    useContext(SnackbarContext);
 
   const hardcodedUsername = "user123";
   const hardcodedPassword = "password123";
@@ -76,6 +75,13 @@ const SignIn = ({ setIsAuthenticated }) => {
           Sign In
         </Button>
       </Box>
+
+      <SnackBarComponent
+        severity={severity}
+        message={message}
+        snackbarOpen={snackbarOpen}
+        setSnackbarOpen={setSnackbarOpen}
+      />
     </Container>
   );
 };
