@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { FaPlus } from "react-icons/fa6";
 import { RxCross2 } from "react-icons/rx";
 import {
@@ -33,6 +33,8 @@ const BoardPage = () => {
   const { setMessage, setSnackbarOpen, setSeverity } =
     useContext(SnackbarContext);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     fetchOneBoard(boardId)
       .then((res) => {
@@ -41,7 +43,10 @@ const BoardPage = () => {
           ? `${String(res.name).toUpperCase()} - Trello Clone`
           : "Trello Clone";
       })
-      .catch((err) => handleSnackbar(err.toString(), "error"));
+      .catch((err) => {
+        handleSnackbar(err.toString(), "error");
+        navigate("/boards");
+      });
 
     fetchLists(boardId)
       .then((res) => {
