@@ -1,20 +1,15 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  TextField,
-  Button,
-  Typography,
-  Container,
-  Box,
-  Snackbar,
-  Alert,
-} from "@mui/material";
+import { TextField, Button, Typography, Container, Box } from "@mui/material";
+import SnackBarComponent from "../../utils/SnackBarComponent";
 
 const SignIn = ({ setIsAuthenticated }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [message, setMessage] = useState("");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [severity, setSeverity] = useState("Success");
   const navigate = useNavigate();
 
   const hardcodedUsername = "user123";
@@ -26,6 +21,8 @@ const SignIn = ({ setIsAuthenticated }) => {
     if (username === hardcodedUsername && password === hardcodedPassword) {
       setIsAuthenticated(true);
       setSnackbarOpen(true);
+      setSeverity("success");
+      setMessage("Successfully Logged In");
       setTimeout(() => navigate("/boards"), 1500);
     } else {
       setErrorMessage("Invalid username or password");
@@ -79,16 +76,12 @@ const SignIn = ({ setIsAuthenticated }) => {
         </Button>
       </Box>
 
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={2000}
-        anchorOrigin={{vertical:'top', horizontal:'right'}}
-        onClose={() => setSnackbarOpen(false)}
-      >
-        <Alert severity="success" onClose={() => setSnackbarOpen(false)}>
-          Successfully Signed In!
-        </Alert>
-      </Snackbar>
+      <SnackBarComponent
+        severity={severity}
+        message={message}
+        snackbarOpen={snackbarOpen}
+        setSnackbarOpen={setSnackbarOpen}
+      />
     </Container>
   );
 };

@@ -5,8 +5,6 @@ import {
   Skeleton,
   TextField,
   Button,
-  Snackbar,
-  Alert,
   Box,
   Typography,
   Grid2,
@@ -14,20 +12,18 @@ import {
 
 import { fetchBoards } from "../api/fetchApi";
 import { postBoard } from "../api/postApi";
-import ErrorBoundary from '../errorBoundary/ErrorBoundary'
+import ErrorBoundary from "../errorBoundary/ErrorBoundary";
 import HomeBoardCard from "../components/HomeBoardCard";
+import SnackBarComponent from "../utils/SnackBarComponent";
 
 const HomePage = () => {
   const [boards, setBoards] = useState([]);
   const [loading, setLoading] = useState(true);
   const [openPopover, setOpenPopover] = useState(null);
   const [boardName, setBoardName] = useState("");
-  const [error, setError] = useState("");
-  const [successSnackbar, setSuccessSnackbar] = useState({
-    open: false,
-    message: "",
-    severity: "success",
-  });
+  const [message, setMessage] = useState("");
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [severity, setSeverity] = useState("success");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -37,9 +33,13 @@ const HomePage = () => {
         setLoading(false);
       })
       .catch((err) => {
-        setError(err.toString());
+        setSnackbarOpen(true);
+        setSeverity("error");
+        setMessage(err.toString());
       });
   }, []);
+
+  document.title = "Trello Clone";
 
   const createNewBoard = async (event) => {
     event.preventDefault();
@@ -50,26 +50,22 @@ const HomePage = () => {
       setBoards([...boards, response]);
       setBoardName("");
       setOpenPopover(null);
-      setSuccessSnackbar({
-        open: true,
-        message: "Board created successfully!",
-        severity: "success",
-      });
-  
+      setMessage("Board created successfully");
+      setSeverity("success");
+      setSnackbarOpen(true);
+
       setTimeout(() => {
         navigate(`/boards/${response.id}`);
       }, 1000);
     } catch (err) {
-      setError(err.toString());
+      setMessage(err.toString());
     }
   };
 
   const handleBoardClick = (boardId) => {
-    setSuccessSnackbar({
-      open: true,
-      message: "Navigating to board...",
-      severity: "info",
-    });
+    setSnackbarOpen(true);
+    setMessage("Navigating to board...");
+    setSeverity("info");
 
     setTimeout(() => {
       navigate(`/boards/${boardId}`);
@@ -92,35 +88,42 @@ const HomePage = () => {
         Boards
       </Typography>
 
-      <Grid2 container spacing={2} className="max-w-[1200px] mt-6 mb-8 justify-center">
-        {loading
-          ? Array.from(new Array(10)).map((_, index) => (
-              <Grid2 item xs={12} sm={6} md={4} lg={3} key={index}>
-                <Skeleton
-                  variant="rectangular"
-                  width={250}
-                  height={150}
-                  className="rounded"
-                />
-              </Grid2>
-            ))
-          : boards.length > 0 ? (
-              boards.map((board, index) => (
-                <Grid2 item xs={12} sm={6} md={4} lg={3} key={index}>
-                  <ErrorBoundary>
-                    <Box onClick={() => handleBoardClick(board.id)} className="cursor-pointer">
-                      <HomeBoardCard board={board} />
-                    </Box>
-                  </ErrorBoundary>
-                </Grid2>
-              ))
-            ) : (
-              <Grid2 item xs={12}>
-                <Typography variant="h4" align="center">
-                  There are no boards
-                </Typography>
-              </Grid2>
-            )}
+      <Grid2
+        container
+        spacing={2}
+        className="max-w-[1200px] mt-6 mb-8 justify-center"
+      >
+        {loading ? (
+          Array.from(new Array(10)).map((_, index) => (
+            <Grid2 item xs={12} sm={6} md={4} lg={3} key={index}>
+              <Skeleton
+                variant="rectangular"
+                width={250}
+                height={150}
+                className="rounded"
+              />
+            </Grid2>
+          ))
+        ) : boards.length > 0 ? (
+          boards.map((board, index) => (
+            <Grid2 item xs={12} sm={6} md={4} lg={3} key={index}>
+              <ErrorBoundary>
+                <Box
+                  onClick={() => handleBoardClick(board.id)}
+                  className="cursor-pointer hover:scale-105"
+                >
+                  <HomeBoardCard board={board} />
+                </Box>
+              </ErrorBoundary>
+            </Grid2>
+          ))
+        ) : (
+          <Grid2 item xs={12}>
+            <Typography variant="h4" align="center">
+              There are no boards
+            </Typography>
+          </Grid2>
+        )}
 
         {!loading && (
           <Grid2 item xs={12} sm={6} md={4} lg={3}>
@@ -164,34 +167,12 @@ const HomePage = () => {
         </Box>
       </Popover>
 
-      <Snackbar
-        open={Boolean(error)}
-        onClose={() => setError("")}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      >
-        <Alert onClose={() => setError("")} severity="error" className="w-full">
-          {error}
-        </Alert>
-      </Snackbar>
-
-      <Snackbar
-        open={successSnackbar.open}
-        autoHideDuration={6000}
-        anchorOrigin={{vertical:'top', horizontal:'right'}}
-        onClose={() =>
-          setSuccessSnackbar({ ...successSnackbar, open: false })
-        }
-      >
-        <Alert
-          onClose={() =>
-            setSuccessSnackbar({ ...successSnackbar, open: false })
-          }
-          severity={successSnackbar.severity}
-          className="w-full"
-        >
-          {successSnackbar.message}
-        </Alert>
-      </Snackbar>
+      <SnackBarComponent
+        severity={severity}
+        message={message}
+        setSnackbarOpen={setSnackbarOpen}
+        snackbarOpen={snackbarOpen}
+      />
     </Box>
   );
 };

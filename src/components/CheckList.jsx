@@ -1,5 +1,12 @@
-import React,{ useState, useEffect } from "react";
-import { Button, Typography, Box, TextField, Paper, IconButton, Snackbar, Alert } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import {
+  Button,
+  Typography,
+  Box,
+  TextField,
+  Paper,
+  IconButton,
+} from "@mui/material";
 import { RxCross2 } from "react-icons/rx";
 import { FaPlus } from "react-icons/fa6";
 
@@ -7,6 +14,7 @@ import CheckItems from "./CheckItems";
 import { postCheckItem } from "../api/postApi";
 import { fetchCheckItems } from "../api/fetchApi";
 import { deleteCheckItem } from "../api/deleteApi";
+import SnackBarComponent from "../utils/SnackBarComponent";
 import LinearProgressWithLabel from "./LinearProgressWithLabel";
 import ErrorBoundary from "../errorBoundary/ErrorBoundary";
 
@@ -14,16 +22,20 @@ const CheckList = ({ checkListData, deleteCheckList }) => {
   const [checkItems, setCheckItems] = useState([]);
   const [showAddCheckItem, setShowAddCheckItem] = useState(false);
   const [checkItemName, setCheckItemName] = useState("");
-  const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
-  
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [severity, setSeverity] = useState("success");
+  const [message, setMessage] = useState("");
+
   useEffect(() => {
     fetchCheckItems(checkListData.id)
       .then((response) => setCheckItems(response))
-      .catch((err) => showSnackbar(err.message, "error"));
+      .catch((err) => showSnackbar(err, "error"));
   }, [checkListData.id]);
 
   const showSnackbar = (message, severity) => {
-    setSnackbar({ open: true, message, severity });
+    setMessage(message);
+    setSnackbarOpen(true);
+    setSeverity(severity);
   };
 
   function updateCheckItem(checkItemId, newState) {
@@ -35,7 +47,9 @@ const CheckList = ({ checkListData, deleteCheckList }) => {
   }
 
   const progress = checkItems.filter((item) => item.state === "complete");
-  let progressBar = Number(Math.round((progress.length / checkItems.length) * 100));
+  let progressBar = Number(
+    Math.round((progress.length / checkItems.length) * 100)
+  );
 
   const showList = () => setShowAddCheckItem(!showAddCheckItem);
 
@@ -76,7 +90,11 @@ const CheckList = ({ checkListData, deleteCheckList }) => {
         <Typography variant="h6" className="font-semibold capitalize">
           {checkListData.name}
         </Typography>
-        <Button variant="outlined" className="text-sm py-1 px-2" onClick={() => deleteCheckList(checkListData.id)}>
+        <Button
+          variant="outlined"
+          className="text-sm py-1 px-2"
+          onClick={() => deleteCheckList(checkListData.id)}
+        >
           Delete
         </Button>
       </Box>
@@ -86,16 +104,36 @@ const CheckList = ({ checkListData, deleteCheckList }) => {
       {checkItems.length > 0 &&
         checkItems.map((ele) => (
           <ErrorBoundary key={ele.id}>
-            <CheckItems  itemData={ele} updateCheckItem={updateCheckItem} deleteCheckItem={deleteCheckItemFunc} idCard={checkListData.idCard} />
+            <CheckItems
+              itemData={ele}
+              updateCheckItem={updateCheckItem}
+              deleteCheckItem={deleteCheckItemFunc}
+              idCard={checkListData.idCard}
+            />
           </ErrorBoundary>
         ))}
 
       <Box className="mt-2">
         {showAddCheckItem ? (
-          <Paper component="form" onSubmit={handleSubmit} className="p-4 bg-gray-100 rounded-md">
-            <TextField fullWidth variant="outlined" size="small" placeholder="Add CheckItem..." value={checkItemName} onChange={(e) => setCheckItemName(e.target.value)} />
+          <Paper
+            component="form"
+            onSubmit={handleSubmit}
+            className="p-4 bg-gray-100 rounded-md"
+          >
+            <TextField
+              fullWidth
+              variant="outlined"
+              size="small"
+              placeholder="Add CheckItem..."
+              value={checkItemName}
+              onChange={(e) => setCheckItemName(e.target.value)}
+            />
             <Box className="flex items-center justify-between mt-2">
-              <Button variant="contained" className="bg-blue-800 text-white py-1" onClick={handleAddCheckItem}>
+              <Button
+                variant="contained"
+                className="bg-blue-800 text-white py-1"
+                onClick={handleAddCheckItem}
+              >
                 Add
               </Button>
               <IconButton onClick={showList}>
@@ -104,17 +142,22 @@ const CheckList = ({ checkListData, deleteCheckList }) => {
             </Box>
           </Paper>
         ) : (
-          <Button startIcon={<FaPlus />} className="w-full bg-gray-200 hover:bg-gray-300 text-sm py-1 px-4 rounded-full" onClick={showList}>
+          <Button
+            startIcon={<FaPlus />}
+            className="w-full bg-gray-200 hover:bg-gray-300 text-sm py-1 px-4 rounded-full"
+            onClick={showList}
+          >
             Add CheckItem...
           </Button>
         )}
       </Box>
 
-      <Snackbar open={snackbar.open} autoHideDuration={3000} anchorOrigin={{vertical:'top', horizontal:'right'}} onClose={() => setSnackbar({ ...snackbar, open: false })}>
-        <Alert onClose={() => setSnackbar({ ...snackbar, open: false })} severity={snackbar.severity} sx={{ width: "100%" }}>
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
+      <SnackBarComponent
+        message={message}
+        snackbarOpen={snackbarOpen}
+        setSnackbarOpen={setSnackbarOpen}
+        severity={severity}
+      />
     </Paper>
   );
 };

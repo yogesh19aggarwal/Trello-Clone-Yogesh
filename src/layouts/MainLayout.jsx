@@ -3,11 +3,11 @@ import { Outlet } from "react-router-dom";
 import { StyledEngineProvider } from "@mui/material";
 import React from "react";
 
-const MainLayout = ()=>{
+const MainLayout = ({setIsAuthenticated})=>{
 
     return (
         <StyledEngineProvider injectFirst>
-            <Navbar/>
+            <Navbar setIsAuthenticated={setIsAuthenticated}/>
             <Outlet/>
         </StyledEngineProvider>
     )

@@ -1,12 +1,19 @@
-import React,{ useState } from "react";
+import React, { useState } from "react";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { Checkbox, IconButton, Snackbar, Alert, Typography } from "@mui/material";
+import { Checkbox, IconButton, Typography, Box } from "@mui/material";
 
 import { putCheckItems } from "../api/putApi";
+import SnackBarComponent from "../utils/SnackBarComponent";
 
 const CheckItems = ({ itemData, deleteCheckItem, idCard, updateCheckItem }) => {
-  const [checked, setChecked] = useState(itemData.state === "complete" ? true : false);
-  const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
+  const [checked, setChecked] = useState(
+    itemData.state === "complete" ? true : false
+  );
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbar, setSnackbar] = useState({
+    message: "",
+    severity: "success",
+  });
 
   const updateCheckItemState = async () => {
     setChecked((prev) => !prev);
@@ -17,21 +24,17 @@ const CheckItems = ({ itemData, deleteCheckItem, idCard, updateCheckItem }) => {
       await putCheckItems(idCard, checkItemId, newState);
       updateCheckItem(checkItemId, newState);
     } catch (err) {
-      showSnackbar(`Error updating item state! ${err}`, 'error');
+      showSnackbar(`Error updating item state! ${err}`, "error");
     }
   };
 
-  const handleCloseSnackbar = () => {
-    setSnackbar({ ...snackbar, open: false });
-  };
-
   const showSnackbar = (message, severity) => {
-    setSnackbar({ open: true, message, severity });
+    setSnackbarOpen(true);
+    setSnackbar({ message, severity });
   };
 
   return (
-    <div className="check_item flex items-center justify-between my-1 w-full">
-      
+    <Box className="check_item flex items-center justify-between my-1 w-full">
       <Checkbox
         className="w-[10%]"
         onChange={updateCheckItemState}
@@ -48,22 +51,14 @@ const CheckItems = ({ itemData, deleteCheckItem, idCard, updateCheckItem }) => {
       >
         <RiDeleteBin6Line />
       </IconButton>
-       
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={3000}
-        anchorOrigin={{vertical:'top', horizontal:'right'}}
-        onClose={handleCloseSnackbar}
-      >
-        <Alert
-          onClose={handleCloseSnackbar}
-          severity={snackbar.severity}
-          sx={{ width: "100%" }}
-        >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
-    </div>
+
+      <SnackBarComponent
+        message={snackbar.message}
+        severity={snackbar.severity}
+        snackbarOpen={snackbarOpen}
+        setSnackbarOpen={setSnackbarOpen}
+      />
+    </Box>
   );
 };
 
