@@ -115,8 +115,8 @@ VITE_API_TOKEN=<Your Token>
 
 Use the following credentials to sign in:
 
-Username: ```user123```
-Password: ```password123```
+- Username: ```user123```
+- Password: ```password123```
 
 ## Future Improvements
 
