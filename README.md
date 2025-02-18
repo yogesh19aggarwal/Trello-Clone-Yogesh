@@ -111,6 +111,13 @@ VITE_API_TOKEN=<Your Token>
 
 5. Open the application in your browser at `http://localhost:3000`.
 
+## Login Credentials
+
+Use the following credentials to sign in:
+
+Username: ```user123```
+Password: ```password123```
+
 ## Future Improvements
 
 - Add user authentication.
